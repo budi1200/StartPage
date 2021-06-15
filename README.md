@@ -1,5 +1,6 @@
-# Bunker
- My custom browser homepage. Very cool.
+# Bunker v1
+
+My custom browser homepage. Very cool.
 
 # Configuration
 
@@ -7,7 +8,7 @@ Here is an example of a valid Bunker configuration. Invalid JSON will be blocked
 
 ## Steam Games
 
-To remove the "Steam Games" section of the sidebar, simply remove the "steamGames" key. 
+To remove the "Steam Games" section of the sidebar, simply remove the "steamGames" key.
 The "logoHash" attribute of games can be found on https://steamdb.info/.
 
 ```
@@ -61,10 +62,13 @@ The "logoHash" attribute of games can be found on https://steamdb.info/.
 # Screenshots
 
 ## Index
+
 ![Index](/media/example-main.PNG)
 
 ## Sidebar
+
 ![Sidebar](/media/example-sidebar.PNG)
 
 ## Config
+
 ![Config](/media/example-config.PNG)
