@@ -1,4 +1,6 @@
 <script>
+    // @ts-nocheck
+
     import { createEventDispatcher } from "svelte";
 
     export let isEditing;
@@ -12,7 +14,7 @@
         class="filter invert absolute left-4 top-3 z-10 select-none"
         style="user-drag: false"
         width="24"
-        src="assets/images/ico-google.png"
+        src="/src/assets/images/ico-google.png"
         alt="Google"
         draggable="false"
         ondragstart="return false;"
@@ -37,7 +39,7 @@
     >
         {#if !isEditing}
             <button on:click={() => dispatch("enable")} title="Edit" class="glass p-2 rounded-md">
-                <img src="/assets/images/settings_white_24dp.svg" alt="+" />
+                <img src="/src/assets/images/settings_white_24dp.svg" alt="+" />
             </button>
         {:else}
             <button
@@ -45,14 +47,14 @@
                 title="Save"
                 class="p-2 rounded-md glass"
             >
-                <img src="/assets/images/check_white_24dp.svg" alt="+" />
+                <img src="/src/assets/images/check_white_24dp.svg" alt="+" />
             </button>
             <button
                 on:click={() => dispatch("status", "cancel")}
                 title="Cancel"
                 class="ml-2 p-2 rounded-md glass focus:outline-none"
             >
-                <img src="/assets/images/close_white_24dp.svg" alt="+" />
+                <img src="/src/assets/images/close_white_24dp.svg" alt="+" />
             </button>
         {/if}
     </div>

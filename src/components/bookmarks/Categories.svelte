@@ -7,23 +7,7 @@
     export let isEditing: Boolean;
     export let status: String;
 
-    const localKey = "startpage-categories";
-
-    interface IBookmark {
-        id: string;
-        label: string;
-        url: string;
-        alt?: boolean;
-    }
-
-    interface ICategory {
-        id: string;
-        label: string;
-        bookmarks: IBookmark[];
-    }
-
-    // Default Bookmarks - these are overridden by the localStorage
-    let categories: ICategory[] = JSON.parse(localStorage.getItem(localKey)) ?? [
+    const defaultConfig = [
         {
             id: "kptfyh1dru0otxw72a",
             label: "Social Media",
@@ -58,6 +42,24 @@
             ],
         },
     ];
+
+    const localKey = "startpage-categories";
+
+    interface IBookmark {
+        id: string;
+        label: string;
+        url: string;
+        alt?: boolean;
+    }
+
+    interface ICategory {
+        id: string;
+        label: string;
+        bookmarks: IBookmark[];
+    }
+
+    // Default Bookmarks - these are overridden by the localStorage
+    let categories: ICategory[] = JSON.parse(localStorage.getItem(localKey)) ?? defaultConfig;
 
     const getUniqueId = () => {
         return Date.now().toString(36) + Math.random().toString(36).substring(2);
@@ -171,7 +173,7 @@
         localStorage.setItem(localKey, JSON.stringify(categories));
     } else if (status === "cancel") {
         dispatch("state", null);
-        categories = JSON.parse(localStorage.getItem(localKey));
+        categories = JSON.parse(localStorage.getItem(localKey)) ?? defaultConfig;
     }
 </script>
 
@@ -201,7 +203,7 @@
                             <input type="hidden" name="categoryId" value={category.id} />
                             <input type="hidden" name="bookmarkId" value={bookmark.id} />
                             <button type="submit">
-                                <img src="/assets/images/close_white_24dp.svg" alt="+" />
+                                <img src="/src/assets/images/close_white_24dp.svg" alt="+" />
                             </button>
                         {/if}
                     </form>
@@ -211,7 +213,7 @@
                         <div class="bookmark grid px-2">
                             <div class="bookmark-icon">
                                 <button type="submit">
-                                    <img src="/assets/images/add_white_24dp.svg" alt="+" />
+                                    <img src="/src/assets/images/add_white_24dp.svg" alt="+" />
                                 </button>
                             </div>
 
@@ -234,7 +236,7 @@
                         on:click={() => removeCategory(category.id)}
                     >
                         <img
-                            src="/assets/images/close_white_24dp.svg"
+                            src="/src/assets/images/close_white_24dp.svg"
                             alt="x"
                             title="Remove Category"
                         />
@@ -246,7 +248,7 @@
     {#if isEditing}
         <div class="flex flex-col space-y-1">
             <button type="button" class="glass p-2 w-10 rounded-md" on:click={addCategory}>
-                <img src="/assets/images/add_white_24dp.svg" alt="+" />
+                <img src="/src/assets/images/add_white_24dp.svg" alt="+" />
             </button>
 
             <button
@@ -255,7 +257,7 @@
                 on:click={importData}
                 title="Import"
             >
-                <img src="/assets/images/file_upload_white_24dp.svg" alt="+" />
+                <img src="/src/assets/images/file_upload_white_24dp.svg" alt="+" />
             </button>
 
             <button
@@ -264,7 +266,7 @@
                 on:click={exportData}
                 title="Export"
             >
-                <img src="/assets/images/file_download_white_24dp.svg" alt="+" />
+                <img src="/src/assets/images/file_download_white_24dp.svg" alt="+" />
             </button>
         </div>
     {/if}
