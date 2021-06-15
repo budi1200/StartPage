@@ -203,7 +203,7 @@
                             <input type="hidden" name="categoryId" value={category.id} />
                             <input type="hidden" name="bookmarkId" value={bookmark.id} />
                             <button type="submit">
-                                <img src="/src/assets/images/close_white_24dp.svg" alt="+" />
+                                <img src="/assets/images/close_white_24dp.svg" alt="+" />
                             </button>
                         {/if}
                     </form>
@@ -213,7 +213,7 @@
                         <div class="bookmark grid px-2">
                             <div class="bookmark-icon">
                                 <button type="submit">
-                                    <img src="/src/assets/images/add_white_24dp.svg" alt="+" />
+                                    <img src="/assets/images/add_white_24dp.svg" alt="+" />
                                 </button>
                             </div>
 
@@ -236,7 +236,7 @@
                         on:click={() => removeCategory(category.id)}
                     >
                         <img
-                            src="/src/assets/images/close_white_24dp.svg"
+                            src="/assets/images/close_white_24dp.svg"
                             alt="x"
                             title="Remove Category"
                         />
@@ -248,7 +248,7 @@
     {#if isEditing}
         <div class="flex flex-col space-y-1">
             <button type="button" class="glass p-2 w-10 rounded-md" on:click={addCategory}>
-                <img src="/src/assets/images/add_white_24dp.svg" alt="+" />
+                <img src="/assets/images/add_white_24dp.svg" alt="+" />
             </button>
 
             <button
@@ -257,7 +257,7 @@
                 on:click={importData}
                 title="Import"
             >
-                <img src="/src/assets/images/file_upload_white_24dp.svg" alt="+" />
+                <img src="/assets/images/file_upload_white_24dp.svg" alt="+" />
             </button>
 
             <button
@@ -266,7 +266,7 @@
                 on:click={exportData}
                 title="Export"
             >
-                <img src="/src/assets/images/file_download_white_24dp.svg" alt="+" />
+                <img src="/assets/images/file_download_white_24dp.svg" alt="+" />
             </button>
         </div>
     {/if}

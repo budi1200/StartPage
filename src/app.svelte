@@ -29,7 +29,7 @@
             font-style: normal;
             font-weight: 400;
             font-display: swap;
-            src: url("/src/assets/fonts/Manrope-Regular.woff2");
+            src: url("/assets/fonts/Manrope-Regular.woff2");
         }
     </style>
 </svelte:head>
@@ -60,7 +60,7 @@
     .background-mist {
         @apply pointer-events-none;
         z-index: -;
-        background-image: url("/src/assets/images/bunker-mist-1.png");
+        background-image: url("/assets/images/bunker-mist-1.png");
         background-size: cover;
         opacity: 0.05;
     }
