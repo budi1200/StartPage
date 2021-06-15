@@ -11,13 +11,27 @@ jobs:
     steps:
       - name: "Checkout"
         uses: actions/checkout@v1
+      
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.1.5
+        with:
+            node-version: '16'
+
+      - name: Install Dependencies
+        run: npm install
+      
+      - name: Build project
+        run: npm run build
+      
+      - name: Copy manifest to build folder
+        run: cp ./manifest.json ./dist/
 
       - name: "web-ext build"
         id: web-ext-build
         uses: kewisch/action-web-ext@v1
         with:
           cmd: build
-          source: ./
+          source: ./dist
 
       - name: "web-ext sign"
         id: web-ext-sign
