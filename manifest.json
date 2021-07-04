@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Bunker",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "description": "A Firefox extension for Bunker, a start page.",
     "browser_specific_settings": {
         "gecko": {

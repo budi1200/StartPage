@@ -12,6 +12,6 @@
 </script>
 
 <div id="clock" class="relative text-white mb-3">
-    <h1 class="text-5xl">{today.format("HH:MM:ss")}</h1>
+    <h1 class="text-5xl">{today.format("HH:mm:ss")}</h1>
     <h3 class="text-base">{today.format("ddd, D MMM YYYY")}</h3>
 </div>
