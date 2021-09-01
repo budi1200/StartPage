@@ -68,7 +68,7 @@
     const addCategory = () => {
         let a: ICategory = { id: getUniqueId(), label: "New Category", bookmarks: [] };
         categories = [...categories, a];
-        console.log(categories);
+        // console.log(categories);
     };
 
     const addBookmark = (e) => {
@@ -98,7 +98,7 @@
         categories[categoryIndex].bookmarks = [...categories[categoryIndex].bookmarks, newBookmark];
         e.target.entry.value = "";
 
-        console.log(categories);
+        // console.log(categories);
     };
 
     const deleteBookmark = (e) => {

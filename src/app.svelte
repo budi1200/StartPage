@@ -16,7 +16,7 @@
 
     const changeStatus = ({ detail }) => {
         status = detail;
-        if (detail == "cancel" || detail === "save") {
+        if (detail === "cancel" || detail === "save") {
             disableEdit();
         }
     };
@@ -41,8 +41,7 @@
 <div id="background-mist2" class="background-mist" />
 
 <div class="main-wrapper mx-auto px-6">
-    <Clock />
-    <Searchbar {isEditing} on:enable={enableEdit} on:status={changeStatus} />
+    <Clock {isEditing} on:enable={enableEdit} on:status={changeStatus} />
     <Categories {isEditing} {status} on:state={changeStatus} />
 </div>
 
@@ -54,12 +53,12 @@
     }
 
     .bg {
-        background-image: url("https://i.redd.it/9490e8fu9oi61.png");
+        background-image: url("/assets/images/bg/9490e8fu9oi61.png");
     }
 
     .background-mist {
         @apply pointer-events-none;
-        z-index: -;
+        z-index: -1;
         background-image: url("/assets/images/bunker-mist-1.png");
         background-size: cover;
         opacity: 0.05;
@@ -72,8 +71,8 @@
         left: 0;
         right: 0;
         background-repeat: repeat;
-        -webkit-animation: backgound-mist-anim 1100000s linear 0s infinite normal;
-        animation: backgound-mist-anim 1100000s linear 0s infinite normal;
+        -webkit-animation: background-mist-anim 1100000s linear 0s infinite normal;
+        animation: background-mist-anim 1100000s linear 0s infinite normal;
         background-attachment: scroll;
     }
 
@@ -84,12 +83,12 @@
         left: 0;
         right: 0;
         background-repeat: repeat;
-        -webkit-animation: backgound-mist-anim2 1100000s linear 0s infinite normal;
-        animation: backgound-mist-anim2 1100000s linear 0s infinite normal;
+        -webkit-animation: background-mist-anim2 1100000s linear 0s infinite normal;
+        animation: background-mist-anim2 1100000s linear 0s infinite normal;
         background-attachment: scroll;
     }
 
-    @-webkit-keyframes backgound-mist-anim {
+    @-webkit-keyframes background-mist-anim {
         0% {
             background-position-x: 0;
         }
@@ -98,7 +97,7 @@
         }
     }
 
-    @keyframes backgound-mist-anim {
+    @keyframes background-mist-anim {
         0% {
             background-position-x: 0;
         }
@@ -107,7 +106,7 @@
         }
     }
 
-    @-webkit-keyframes backgound-mist-anim2 {
+    @-webkit-keyframes background-mist-anim2 {
         0% {
             background-position-x: 0;
         }
@@ -116,7 +115,7 @@
         }
     }
 
-    @keyframes backgound-mist-anim2 {
+    @keyframes background-mist-anim2 {
         0% {
             background-position-x: 0;
         }

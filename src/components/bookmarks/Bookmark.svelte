@@ -9,7 +9,7 @@
         displayUrl = displayUrl.slice(0, 31);
     }
 
-    let grabber = `http://www.google.com/s2/favicons?sz=192&domain_url=${favUrl}`;
+    let grabber = `https://www.google.com/s2/favicons?sz=192&domain_url=${favUrl}`;
     let altGrabber = `https://external-content.duckduckgo.com/ip3/${favUrl}.ico`;
 </script>
 

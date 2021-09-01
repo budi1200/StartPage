@@ -30,34 +30,6 @@
             type="text"
         />
     </div>
-
-    <div
-        id="settingscog"
-        class={`flex items-center ml-2 ${
-            !isEditing ? "opacity-0" : ""
-        } hover:opacity-100 transition-all duration-200`}
-    >
-        {#if !isEditing}
-            <button on:click={() => dispatch("enable")} title="Edit" class="glass p-2 rounded-md">
-                <img src="/assets/images/settings_white_24dp.svg" alt="+" />
-            </button>
-        {:else}
-            <button
-                on:click={() => dispatch("status", "save")}
-                title="Save"
-                class="p-2 rounded-md glass"
-            >
-                <img src="/assets/images/check_white_24dp.svg" alt="+" />
-            </button>
-            <button
-                on:click={() => dispatch("status", "cancel")}
-                title="Cancel"
-                class="ml-2 p-2 rounded-md glass focus:outline-none"
-            >
-                <img src="/assets/images/close_white_24dp.svg" alt="+" />
-            </button>
-        {/if}
-    </div>
 </div>
 
 <style>
@@ -67,11 +39,6 @@
 
     #searchbar:hover {
         background-color: rgba(27, 26, 27, 0.645);
-        box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034), 0 6.7px 5.3px rgba(0, 0, 0, 0.048);
-    }
-
-    button:hover {
-        background-color: rgba(27, 26, 27, 0.445);
         box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034), 0 6.7px 5.3px rgba(0, 0, 0, 0.048);
     }
 </style>
