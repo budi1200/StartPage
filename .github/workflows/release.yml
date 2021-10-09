@@ -25,6 +25,25 @@ jobs:
       
       - name: Copy manifest to build folder
         run: cp ./manifest.json ./dist/
+      
+      - name: Zip It
+        uses: papeloto/action-zip@v1
+        with:
+          files: dist/
+          dest: zipped.zip
+      
+      - name: Build chrome version
+        uses: cardinalby/webext-buildtools-chrome-crx-action@v2
+        with:
+          zipFilePath: 'zipped.zip'
+          crxFilePath: 'out/startpage.crx'
+          privateKey: ${{ secrets.CHROME_CRX_PRIVATE_KEY }},
+      
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2.2.4
+        with:
+          name: StartPage Chrome
+          path: out/*.crx
 
       - name: "web-ext build"
         id: web-ext-build
