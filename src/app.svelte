@@ -34,11 +34,11 @@
     </style>
 </svelte:head>
 
-<div class="bg fixed top-0 left-0 w-full h-full z-0 bg-cover" />
+<div class="bg fixed top-0 left-0 w-full h-full -z-1 bg-cover" />
 
-<div id="background-mist1" class="background-mist" />
+<!--<div id="background-mist1" class="background-mist" />-->
 
-<div id="background-mist2" class="background-mist" />
+<!--<div id="background-mist2" class="background-mist" />-->
 
 <div class="main-wrapper mx-auto px-6">
     <Clock {isEditing} on:enable={enableEdit} on:status={changeStatus} />

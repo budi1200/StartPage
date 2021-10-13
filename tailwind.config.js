@@ -16,6 +16,9 @@ module.exports = {
     },
     theme: {
         extend: {
+            zIndex: {
+                '-1': '-1',
+            },
             gridTemplateColumns: {
                 42: "42px 1fr",
             },
