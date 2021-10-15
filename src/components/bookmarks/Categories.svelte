@@ -170,8 +170,10 @@
     };
 
     $: if (status === "save") {
+        const stringified = JSON.stringify(categories)
         dispatch("state", null);
-        localStorage.setItem(localKey, JSON.stringify(categories));
+        dispatch("upload", stringified)
+        localStorage.setItem(localKey, stringified);
     } else if (status === "cancel") {
         dispatch("state", null);
         categories = JSON.parse(localStorage.getItem(localKey)) ?? defaultConfig;
@@ -179,8 +181,8 @@
 
     $: if (cloudData != null) {
       // TODO: error handling
-      console.log(cloudData, "ayy")
-      categories = JSON.parse(cloudData)
+      categories = cloudData as ICategory[]
+      cloudData = null;
     }
 </script>
 

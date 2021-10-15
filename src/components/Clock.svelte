@@ -57,7 +57,7 @@
                         <img src="/assets/images/cloud.svg" alt="Syncing" />
                     </button>
                 {:else}
-                    <button on:click={() => dispatch("clickLogin")} class="ml-2 p-2 rounded-md glass focus:outline-none">
+                    <button on:click={() => dispatch("clickLogin")} class="ml-2 p-2 rounded-md glass focus:outline-none" title="Click to login">
                         <img src="/assets/images/cloud-off.svg" alt="Not Syncing" />
                     </button>
                 {/if}

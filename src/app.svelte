@@ -128,7 +128,10 @@
         }))
     }
 
-    const saveToCloud = (fileId, config) => {
+    const saveToCloud = async ({detail}) => {
+        const fileId = await getDataFileID()
+        console.log(detail, "ayyyyy")
+
         return new Promise((resolve => {
             gapi.client.request({
                 path: '/upload/drive/v3/files/' + fileId,
@@ -136,7 +139,7 @@
                 params: {
                     uploadType: 'media'
                 },
-                body: JSON.stringify(config)
+                body: detail
             }).then((res) => {
                 console.log(res, "upload")
             });
@@ -169,9 +172,9 @@
         on:clickLogin={handleAuthClick}
         on:download={parseCloudData}
     />
-    <Categories {isEditing} {status} {cloudData} on:state={changeStatus} />
+    <Categories {isEditing} {status} {cloudData} on:state={changeStatus} on:upload={saveToCloud} />
 
-    <button on:click={async () => saveToCloud(await getDataFileID(), `[{"id":"kptfyh1dru0otxw72a","label":"Social Media","bookmarks":[{"id":"kptfyih4jyxljaf6z4o","label":"Facebook","url":"https://www.facebook.com"},{"id":"kptfyx0taoar2eenjjj","label":"Messenger","url":"https://www.messenger.com"},{"id":"kptfyxj50cq9zdazwbi7","label":"Instagram","url":"https://www.instagram.com"},{"id":"kptfyxwt40s3p1ppd7","label":"Reddit","url":"https://www.reddit.com"},{"id":"kptfyyanz7j0ugg9ua","label":"Twitter","url":"https://www.twitter.com"}]},{"id":"kptfyhayai33ejo073a","label":"Entertainment","bookmarks":[{"id":"kptfzcgrhcx2aicwyxj","label":"YouTube","url":"https://www.youtube.com"},{"id":"kptfzg3670uhwkxfei","label":"The Hub","url":"https://www.github.com","alt":true},{"id":"kptfzjrnked0b3pmupb","label":"South Park","url":"https://www.southparkstudios.com/seasons/south-park"}]}]`)}>
+    <button on:click={async () => saveToCloud({config: `[{"id":"kptfyh1dru0otxw72a","label":"Social Media","bookmarks":[{"id":"kptfyih4jyxljaf6z4o","label":"Facebook","url":"https://www.facebook.com"},{"id":"kptfyx0taoar2eenjjj","label":"Messenger","url":"https://www.messenger.com"},{"id":"kptfyxj50cq9zdazwbi7","label":"Instagram","url":"https://www.instagram.com"},{"id":"kptfyxwt40s3p1ppd7","label":"Reddit","url":"https://www.reddit.com"},{"id":"kptfyyanz7j0ugg9ua","label":"Twitter","url":"https://www.twitter.com"}]},{"id":"kptfyhayai33ejo073a","label":"Entertainment","bookmarks":[{"id":"kptfzcgrhcx2aicwyxj","label":"YouTube","url":"https://www.youtube.com"},{"id":"kptfzg3670uhwkxfei","label":"The Hub","url":"https://www.github.com","alt":true},{"id":"kptfzjrnked0b3pmupb","label":"South Park","url":"https://www.southparkstudios.com/seasons/south-park"}]}]`})}>
         Save
     </button>
 </div>
