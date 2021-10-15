@@ -39,8 +39,11 @@ jobs:
         with:
           files: dist/ manifest.json
           dest: zipped.zip
-
-      - uses: actions/upload-artifact@v1
+      
+      - name: Upload & release
+        uses: mnao305/chrome-extension-upload@1.1.1
         with:
-          name: my-artifact
-          path: ${{ github.workspace }}/zipped.zip
+          file-path: zipped.zip
+          extension-id: hanbclhoojgdmafmimakfpmklcpnbibhg
+          client-id: ${{ secrets.CLIENT_ID }}
+          refresh-token: ${{ secrets.REFRESH_TOKEN }}
