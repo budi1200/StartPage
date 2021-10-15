@@ -2,7 +2,7 @@
     import { createEventDispatcher } from "svelte";
     import dayjs from "dayjs";
 
-    var today = dayjs();
+    let today = dayjs();
 
     const updateTime = () => {
         today = dayjs();
@@ -12,6 +12,7 @@
     updateTime();
 
     export let isEditing;
+    export let isLoggedIn;
 
     const dispatch = createEventDispatcher();
 </script>
@@ -42,6 +43,7 @@
                 >
                     <img src="/assets/images/check_white_24dp.svg" alt="+" />
                 </button>
+
                 <button
                     on:click={() => dispatch("status", "cancel")}
                     title="Cancel"
@@ -49,6 +51,16 @@
                 >
                     <img src="/assets/images/close_white_24dp.svg" alt="+" />
                 </button>
+
+                {#if isLoggedIn}
+                    <button on:click={() => dispatch("download")}  class="ml-2 p-2 rounded-md glass focus:outline-none" title="Fetch cloud data">
+                        <img src="/assets/images/cloud.svg" alt="Syncing" />
+                    </button>
+                {:else}
+                    <button on:click={() => dispatch("clickLogin")} class="ml-2 p-2 rounded-md glass focus:outline-none">
+                        <img src="/assets/images/cloud-off.svg" alt="Not Syncing" />
+                    </button>
+                {/if}
             {/if}
         </div>
     </h3>

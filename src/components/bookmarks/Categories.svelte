@@ -6,6 +6,7 @@
     const dispatch = createEventDispatcher();
     export let isEditing: Boolean;
     export let status: String;
+    export let cloudData: String;
 
     const defaultConfig = [
         {
@@ -174,6 +175,12 @@
     } else if (status === "cancel") {
         dispatch("state", null);
         categories = JSON.parse(localStorage.getItem(localKey)) ?? defaultConfig;
+    }
+
+    $: if (cloudData != null) {
+      // TODO: error handling
+      console.log(cloudData, "ayy")
+      categories = JSON.parse(cloudData)
     }
 </script>
 
