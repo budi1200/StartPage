@@ -98,8 +98,6 @@
         };
         categories[categoryIndex].bookmarks = [...categories[categoryIndex].bookmarks, newBookmark];
         e.target.entry.value = "";
-
-        // console.log(categories);
     };
 
     const deleteBookmark = (e) => {
@@ -169,20 +167,27 @@
         console.log(JSON.stringify(categories));
     };
 
+    const saveToLocal = () => {
+      localStorage.setItem(localKey, JSON.stringify(categories));
+    }
+
     $: if (status === "save") {
         const stringified = JSON.stringify(categories)
         dispatch("state", null);
         dispatch("upload", stringified)
-        localStorage.setItem(localKey, stringified);
+        saveToLocal()
     } else if (status === "cancel") {
         dispatch("state", null);
         categories = JSON.parse(localStorage.getItem(localKey)) ?? defaultConfig;
-    }
+    } else if (status === "cloud") {
+      dispatch("state", null);
 
-    $: if (cloudData != null) {
-      // TODO: error handling
-      categories = cloudData as ICategory[]
-      cloudData = null;
+      if (cloudData !== "") {
+          categories = cloudData as ICategory[]
+          saveToLocal()
+      } else {
+        console.log("Cloud data is empty ... skipping")
+      }
     }
 </script>
 
@@ -201,6 +206,7 @@
             {:else}
                 <h3 class="mb-1 text-white">{category.label}</h3>
             {/if}
+
             <ul>
                 {#each category.bookmarks as bookmark}
                     <form
@@ -254,6 +260,7 @@
             </ul>
         </div>
     {/each}
+
     {#if isEditing}
         <div class="flex flex-col space-y-1">
             <button type="button" class="glass p-2 w-10 rounded-md" on:click={addCategory}>
@@ -281,7 +288,7 @@
     {/if}
 </section>
 
-<style type="postcss">
+<style lang="postcss">
     .bookmarks {
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     }

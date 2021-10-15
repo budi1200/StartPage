@@ -13,6 +13,7 @@
 
     export let isEditing;
     export let isLoggedIn;
+    export let isSyncing;
 
     const dispatch = createEventDispatcher();
 </script>
@@ -21,6 +22,11 @@
     <h1 class="text-5xl">{today.format("HH:mm:ss")}</h1>
     <h3 class="text-base">
         {today.format("ddd, D MMM YYYY")}
+
+        {#if isSyncing}
+            <img src="/assets/images/sync.svg" alt="Syncing" class="animate-spin inline"/>
+        {/if}
+
         <div
             id="settingscog"
             class={`flex items-center ml-2 ${
@@ -29,7 +35,7 @@
         >
             {#if !isEditing}
                 <button
-                    on:click={() => dispatch("enable")}
+                    on:click={() => dispatch("enable", true)}
                     title="Edit"
                     class="glass p-2 rounded-md"
                 >
@@ -61,6 +67,7 @@
                         <img src="/assets/images/cloud-off.svg" alt="Not Syncing" />
                     </button>
                 {/if}
+
             {/if}
         </div>
     </h3>

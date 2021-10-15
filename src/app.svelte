@@ -9,29 +9,23 @@
     const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"]
     const SCOPES = "https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.install"
 
+    const LAST_SYNC_NAME = "startpage-lastsync"
+    let isSyncing = false;
     let isLoggedIn = false
     let isEditing = false;
     let status = null;
     let cloudData = null;
 
-    const enableEdit = () => {
-        isEditing = true;
-    };
-
-    const disableEdit = () => {
-        isEditing = false;
-    };
+    const changeEditingStatus = ({detail}) => {
+        isEditing = detail
+    }
 
     const changeStatus = ({ detail }) => {
         status = detail;
         if (detail === "cancel" || detail === "save") {
-            disableEdit();
+            changeEditingStatus({detail: false});
         }
     };
-
-    const parseCloudData = async () => {
-        cloudData = await getCloudData()
-    }
 
     // Google apis stuff
     const handleClientLoad = () => {
@@ -50,20 +44,19 @@
 
             // Handle the initial sign-in state.
             updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-            // authorizeButton.onclick = handleAuthClick;
-            // signoutButton.onclick = handleSignoutClick;
         }, function(error) {
             console.log(JSON.stringify(error, null, 2));
+            alert("Google init error")
         });
     }
 
     function updateSigninStatus(isSignedIn) {
         if (isSignedIn) {
             isLoggedIn = true
-            console.log("wooo signedin")
+            syncHandler()
         } else {
             isLoggedIn = false
-            console.log("yikes")
+            console.log("Not signed in")
         }
     }
 
@@ -71,6 +64,7 @@
         gapi.auth2.getAuthInstance().signIn();
     }
 
+    // Google drive api handlers
     const getDataFileID = async () => {
         // List all files in data folder
         const files = await listCloudFiles()
@@ -90,7 +84,7 @@
         return new Promise((resolve => {
             gapi.client.drive.files.create({
                 resource: {
-                    // parents: ['appDataFolder'],
+                    parents: ['appDataFolder'],
                     name: 'startpage_data.json'
                 },
                 fields: 'id'
@@ -103,7 +97,7 @@
     const listCloudFiles = () => {
         return new Promise((resolve => {
             gapi.client.drive.files.list({
-                // 'spaces': 'appDataFolder',
+                'spaces': 'appDataFolder',
                 'pageSize': 10,
                 'q': "name contains 'startpage_data.json'",
                 'fields': "nextPageToken, files(id, name)"
@@ -122,7 +116,6 @@
                 fileId: fileId,
                 alt: 'media'
             }).then((res) => {
-                console.log(res.result)
                 resolve(res.result)
             })
         }))
@@ -130,7 +123,7 @@
 
     const saveToCloud = async ({detail}) => {
         const fileId = await getDataFileID()
-        console.log(detail, "ayyyyy")
+        isSyncing = true
 
         return new Promise((resolve => {
             gapi.client.request({
@@ -141,9 +134,38 @@
                 },
                 body: detail
             }).then((res) => {
-                console.log(res, "upload")
+                if (res.status !== 200) {
+                    console.log("Upload failed", res)
+                    return;
+                }
+
+                isSyncing = false
             });
         }))
+    }
+
+    // Handles automatically syncing
+    const syncHandler = async () => {
+        const lastSyncTime = localStorage.getItem(LAST_SYNC_NAME)
+        const timeDiff = Math.abs(parseInt(lastSyncTime) - Date.now())
+
+        // Sync every 10 min
+        if (lastSyncTime != null && timeDiff < 600000) {
+            return
+        }
+
+        isSyncing = true
+
+        console.log("Syncing data")
+        await loadCloudData()
+        await localStorage.setItem(LAST_SYNC_NAME, Date.now().toString())
+
+        isSyncing = false
+    }
+
+    const loadCloudData = async () => {
+        cloudData = await getCloudData()
+        changeStatus({detail: "cloud"})
     }
 </script>
 
@@ -167,16 +189,13 @@
     <Clock
         {isEditing}
         {isLoggedIn}
-        on:enable={enableEdit}
+        {isSyncing}
+        on:enable={changeEditingStatus}
         on:status={changeStatus}
         on:clickLogin={handleAuthClick}
-        on:download={parseCloudData}
+        on:download={loadCloudData}
     />
     <Categories {isEditing} {status} {cloudData} on:state={changeStatus} on:upload={saveToCloud} />
-
-    <button on:click={async () => saveToCloud({config: `[{"id":"kptfyh1dru0otxw72a","label":"Social Media","bookmarks":[{"id":"kptfyih4jyxljaf6z4o","label":"Facebook","url":"https://www.facebook.com"},{"id":"kptfyx0taoar2eenjjj","label":"Messenger","url":"https://www.messenger.com"},{"id":"kptfyxj50cq9zdazwbi7","label":"Instagram","url":"https://www.instagram.com"},{"id":"kptfyxwt40s3p1ppd7","label":"Reddit","url":"https://www.reddit.com"},{"id":"kptfyyanz7j0ugg9ua","label":"Twitter","url":"https://www.twitter.com"}]},{"id":"kptfyhayai33ejo073a","label":"Entertainment","bookmarks":[{"id":"kptfzcgrhcx2aicwyxj","label":"YouTube","url":"https://www.youtube.com"},{"id":"kptfzg3670uhwkxfei","label":"The Hub","url":"https://www.github.com","alt":true},{"id":"kptfzjrnked0b3pmupb","label":"South Park","url":"https://www.southparkstudios.com/seasons/south-park"}]}]`})}>
-        Save
-    </button>
 </div>
 
 <style lang="postcss">

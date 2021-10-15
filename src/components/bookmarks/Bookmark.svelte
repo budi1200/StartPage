@@ -1,4 +1,5 @@
 <script lang="ts">
+    export let id: String;
     export let label: string;
     export let url: string;
     export let alt: boolean = false;
@@ -9,8 +10,8 @@
         displayUrl = displayUrl.slice(0, 31);
     }
 
-    let grabber = `https://www.google.com/s2/favicons?sz=192&domain_url=${favUrl}`;
-    let altGrabber = `https://external-content.duckduckgo.com/ip3/${favUrl}.ico`;
+    let grabber = `https://external-content.duckduckgo.com/ip3/${favUrl}.ico`;
+    let altGrabber = `https://www.google.com/s2/favicons?sz=192&domain_url=${favUrl}`;
 </script>
 
 <a href={url}>

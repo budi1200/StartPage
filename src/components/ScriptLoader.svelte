@@ -4,7 +4,7 @@
     const dispatch = createEventDispatcher()
 
     export let src;
-    export let libraryDetectionObject;
+    let libraryDetectionObject;
     let script;
 
     onMount(() => {
@@ -25,6 +25,6 @@
 </script>
 
 <svelte:head>
-    <script async defer bind:this={script} {src}>
+    <script async defer bind:this={script} {src} crossorigin="anonymous">
     </script>
 </svelte:head>
