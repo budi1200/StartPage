@@ -18,7 +18,8 @@
     },
     "scripts": {
         "dev": "vite",
-        "build": "vite build && copy \"manifest.json\" \"dist/manifest.json\" /y",
+        "build": "vite build",
+        "build:win": "npm run build && copy \"manifest.json\" \"dist/manifest.json\" /y",
         "serve": "vite preview"
     },
     "dependencies": {
