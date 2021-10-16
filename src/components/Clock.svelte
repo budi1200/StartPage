@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { createEventDispatcher } from "svelte";
     import dayjs from "dayjs";
 
@@ -73,7 +73,7 @@
     </h3>
 </div>
 
-<style>
+<style lang="postcss">
     #settingscog {
         display: inline;
     }

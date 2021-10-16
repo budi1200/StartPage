@@ -1,13 +1,19 @@
-<script>
+<script lang="ts">
     import Clock from "./components/Clock.svelte";
     import Categories from "./components/bookmarks/Categories.svelte";
-    import ScriptLoader from "./components/ScriptLoader.svelte";
+    import axios from "axios"
+    import * as browser from "webextension-polyfill";
+    import {onMount} from "svelte";
+
+    // Google Drive API Endpoints
+    const CORS_PROXY = "https://cors.pojej.se"
+    const DRIVE_FILES_URL = `${CORS_PROXY}/https://www.googleapis.com/drive/v3/files`
+    const DRIVE_UPLOAD_URL = `${CORS_PROXY}/https://www.googleapis.com/upload/drive/v3/files`
 
     // Google stuff
-    const API_KEY = "AIzaSyAuhMlSSar1Dc4fzWZKDqrP9foUme5NpUI"
     const CLIENT_ID = "15939700739-sa3ojuvchrq30sepr3uudj4p9kbm3ts1.apps.googleusercontent.com"
-    const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"]
     const SCOPES = "https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.install"
+    const AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth?"
 
     const LAST_SYNC_NAME = "startpage-lastsync"
     let isSyncing = false;
@@ -15,39 +21,53 @@
     let isEditing = false;
     let status = null;
     let cloudData = null;
+    let token = null;
 
     const changeEditingStatus = ({detail}) => {
         isEditing = detail
     }
 
-    const changeStatus = ({ detail }) => {
+    const changeStatus = ({detail}) => {
         status = detail;
         if (detail === "cancel" || detail === "save") {
             changeEditingStatus({detail: false});
         }
     };
 
-    // Google apis stuff
-    const handleClientLoad = () => {
-        gapi.load('client:auth2', initClient);
+    const extractAccessToken = (redirectUri) => {
+        let m = redirectUri.match(/[#?](.*)/);
+        if (!m || m.length < 1)
+            return null;
+        let params = new URLSearchParams(m[1].split("#")[0]);
+        return params.get("access_token");
     }
 
-    function initClient() {
-        gapi.client.init({
-            apiKey: API_KEY,
-            clientId: CLIENT_ID,
-            discoveryDocs: DISCOVERY_DOCS,
+    // Google apis stuff
+    const googleLogin = () => {
+        const auth_params = {
+            client_id: CLIENT_ID,
+            redirect_uri: browser.identity.getRedirectURL(),
+            response_type: "token",
             scope: SCOPES
-        }).then(function () {
-            // Listen for sign-in state changes.
-            gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+        };
 
-            // Handle the initial sign-in state.
-            updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-        }, function(error) {
-            console.log(JSON.stringify(error, null, 2));
-            alert("Google init error")
-        });
+        const url = new URLSearchParams(Object.entries(auth_params)).toString();
+
+        browser.identity.launchWebAuthFlow({
+            url: AUTH_URL + url,
+            interactive: true
+        }).then((res) => {
+            const extractedToken = extractAccessToken(res)
+
+            if (extractedToken == null) {
+                throw "Authorization failure"
+            }
+
+            token = extractedToken
+            updateSigninStatus(extractedToken != null)
+        }).catch((err) => {
+            console.log(err)
+        })
     }
 
     function updateSigninStatus(isSignedIn) {
@@ -60,11 +80,86 @@
         }
     }
 
-    function handleAuthClick() {
-        gapi.auth2.getAuthInstance().signIn();
+    const getAxiosOptions = () => {
+        return {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        }
     }
 
     // Google drive api handlers
+    const createCloudFile = () => {
+        return new Promise((resolve => {
+            axios.post(DRIVE_FILES_URL, {
+                parents: ['appDataFolder'],
+                name: "startpage_data.json"
+            }, getAxiosOptions())
+                .then((res) => {
+                    resolve(res.data.id)
+                }).catch((err) => {
+                console.log(err)
+            })
+        }))
+    };
+
+    const listCloudFiles = () => {
+        return new Promise((resolve) => {
+            const urlParams = {
+                spaces: 'appDataFolder',
+                pageSize: "100",
+                q: "name contains 'startpage_data.json'",
+                fields: "files(id, name)"
+            }
+
+            const url = new URLSearchParams(Object.entries(urlParams)).toString();
+
+            axios.get(DRIVE_FILES_URL + "?" + url, getAxiosOptions())
+                .then((res) => {
+                    resolve(res.data.files)
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+        })
+    };
+
+    const getCloudData = async () => {
+        const fileId = await getDataFileID()
+
+        return new Promise((resolve) => {
+            axios.get(DRIVE_FILES_URL + "/" + fileId + "?alt=media", getAxiosOptions())
+                .then((res) => {
+                    resolve(res.data)
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+        })
+    }
+
+    const saveToCloud = async ({detail}) => {
+        const fileId = await getDataFileID()
+        isSyncing = true
+
+        return new Promise((resolve => {
+            axios.patch(DRIVE_UPLOAD_URL + "/" + fileId + "?uploadType=media", detail, getAxiosOptions())
+                .then((res) => {
+                    if (res.status !== 200) {
+                        console.log("Upload failed", res)
+                        return;
+                    }
+
+                    isSyncing = false
+                    resolve()
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+        }))
+    }
+
+    // Handles automatically syncing
     const getDataFileID = async () => {
         // List all files in data folder
         const files = await listCloudFiles()
@@ -80,71 +175,15 @@
         return files[0].id
     }
 
-    const createCloudFile = () => {
-        return new Promise((resolve => {
-            gapi.client.drive.files.create({
-                resource: {
-                    parents: ['appDataFolder'],
-                    name: 'startpage_data.json'
-                },
-                fields: 'id'
-            }).then((res) => {
-                resolve(res.result.id)
-            })
-        }))
-    };
-
-    const listCloudFiles = () => {
-        return new Promise((resolve => {
-            gapi.client.drive.files.list({
-                'spaces': 'appDataFolder',
-                'pageSize': 10,
-                'q': "name contains 'startpage_data.json'",
-                'fields': "nextPageToken, files(id, name)"
-            }).then(function(response) {
-                resolve(response.result.files)
-            });
-        }))
-
-    };
-
-    const getCloudData = async () => {
-        const fileId = await getDataFileID()
-
-        return new Promise((resolve => {
-            gapi.client.drive.files.get({
-                fileId: fileId,
-                alt: 'media'
-            }).then((res) => {
-                resolve(res.result)
-            })
-        }))
-    }
-
-    const saveToCloud = async ({detail}) => {
-        const fileId = await getDataFileID()
+    const loadCloudData = async () => {
         isSyncing = true
 
-        return new Promise((resolve => {
-            gapi.client.request({
-                path: '/upload/drive/v3/files/' + fileId,
-                method: 'PATCH',
-                params: {
-                    uploadType: 'media'
-                },
-                body: detail
-            }).then((res) => {
-                if (res.status !== 200) {
-                    console.log("Upload failed", res)
-                    return;
-                }
+        cloudData = await getCloudData()
+        changeStatus({detail: "cloud"})
 
-                isSyncing = false
-            });
-        }))
+        isSyncing = false
     }
 
-    // Handles automatically syncing
     const syncHandler = async () => {
         const lastSyncTime = localStorage.getItem(LAST_SYNC_NAME)
         const timeDiff = Math.abs(parseInt(lastSyncTime) - Date.now())
@@ -154,25 +193,18 @@
             return
         }
 
-        isSyncing = true
-
         console.log("Syncing data")
         await loadCloudData()
         await localStorage.setItem(LAST_SYNC_NAME, Date.now().toString())
-
-        isSyncing = false
     }
 
-    const loadCloudData = async () => {
-        cloudData = await getCloudData()
-        changeStatus({detail: "cloud"})
-    }
+    onMount(() => {
+        googleLogin()
+    })
 </script>
 
-<ScriptLoader src="https://apis.google.com/js/api.js" on:loaded={handleClientLoad}/>
-
 <svelte:head>
-    <style>
+    <style lang="postcss">
         @font-face {
             font-family: "Manrope";
             font-style: normal;
@@ -192,10 +224,10 @@
         {isSyncing}
         on:enable={changeEditingStatus}
         on:status={changeStatus}
-        on:clickLogin={handleAuthClick}
+        on:clickLogin={googleLogin}
         on:download={loadCloudData}
     />
-    <Categories {isEditing} {status} {cloudData} on:state={changeStatus} on:upload={saveToCloud} />
+    <Categories {isEditing} {status} {cloudData} on:state={changeStatus} on:upload={saveToCloud}/>
 </div>
 
 <style lang="postcss">

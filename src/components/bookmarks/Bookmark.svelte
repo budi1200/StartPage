@@ -1,5 +1,5 @@
 <script lang="ts">
-    export let id: String;
+    export let id: string
     export let label: string;
     export let url: string;
     export let alt: boolean = false;

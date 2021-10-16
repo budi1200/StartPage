@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { createEventDispatcher } from "svelte";
+    import {createEventDispatcher} from "svelte";
 
     import Bookmark from "./Bookmark.svelte";
 
@@ -13,22 +13,22 @@
             id: "kptfyh1dru0otxw72a",
             label: "Social Media",
             bookmarks: [
-                { id: "kptfyih4jyxljaf6z4o", label: "Facebook", url: "https://www.facebook.com" },
-                { id: "kptfyx0taoar2eenjjj", label: "Messenger", url: "https://www.messenger.com" },
+                {id: "kptfyih4jyxljaf6z4o", label: "Facebook", url: "https://www.facebook.com"},
+                {id: "kptfyx0taoar2eenjjj", label: "Messenger", url: "https://www.messenger.com"},
                 {
                     id: "kptfyxj50cq9zdazwbi7",
                     label: "Instagram",
                     url: "https://www.instagram.com",
                 },
-                { id: "kptfyxwt40s3p1ppd7", label: "Reddit", url: "https://www.reddit.com" },
-                { id: "kptfyyanz7j0ugg9ua", label: "Twitter", url: "https://www.twitter.com" },
+                {id: "kptfyxwt40s3p1ppd7", label: "Reddit", url: "https://www.reddit.com"},
+                {id: "kptfyyanz7j0ugg9ua", label: "Twitter", url: "https://www.twitter.com"},
             ],
         },
         {
             id: "kptfyhayai33ejo073a",
             label: "Entertainment",
             bookmarks: [
-                { id: "kptfzcgrhcx2aicwyxj", label: "YouTube", url: "https://www.youtube.com" },
+                {id: "kptfzcgrhcx2aicwyxj", label: "YouTube", url: "https://www.youtube.com"},
                 {
                     id: "kptfzg3670uhwkxfei",
                     label: "The Hub",
@@ -67,7 +67,7 @@
     };
 
     const addCategory = () => {
-        let a: ICategory = { id: getUniqueId(), label: "New Category", bookmarks: [] };
+        let a: ICategory = {id: getUniqueId(), label: "New Category", bookmarks: []};
         categories = [...categories, a];
         // console.log(categories);
     };
@@ -117,7 +117,7 @@
         categories = [...categories];
     };
 
-    const updateCategoryName = ({ target }, id: string) => {
+    const updateCategoryName = ({target}, id: string) => {
         let name = target.value;
 
         if (id === undefined || id === "") {
@@ -168,7 +168,7 @@
     };
 
     const saveToLocal = () => {
-      localStorage.setItem(localKey, JSON.stringify(categories));
+        localStorage.setItem(localKey, JSON.stringify(categories));
     }
 
     $: if (status === "save") {
@@ -180,14 +180,14 @@
         dispatch("state", null);
         categories = JSON.parse(localStorage.getItem(localKey)) ?? defaultConfig;
     } else if (status === "cloud") {
-      dispatch("state", null);
+        dispatch("state", null);
 
-      if (cloudData !== "") {
-          categories = cloudData as ICategory[]
-          saveToLocal()
-      } else {
-        console.log("Cloud data is empty ... skipping")
-      }
+        if (cloudData !== "") {
+            categories = cloudData as ICategory[]
+            saveToLocal()
+        } else {
+            console.log("Cloud data is empty ... skipping")
+        }
     }
 </script>
 
@@ -213,12 +213,12 @@
                         on:submit={deleteBookmark}
                         class={isEditing ? "flex justify-between" : ""}
                     >
-                        <Bookmark {...bookmark} />
+                        <Bookmark {...bookmark}/>
                         {#if isEditing}
-                            <input type="hidden" name="categoryId" value={category.id} />
-                            <input type="hidden" name="bookmarkId" value={bookmark.id} />
+                            <input type="hidden" name="categoryId" value={category.id}/>
+                            <input type="hidden" name="bookmarkId" value={bookmark.id}/>
                             <button type="submit">
-                                <img src="/assets/images/close_white_24dp.svg" alt="+" />
+                                <img src="/assets/images/close_white_24dp.svg" alt="+"/>
                             </button>
                         {/if}
                     </form>
@@ -228,12 +228,12 @@
                         <div class="bookmark grid px-2">
                             <div class="bookmark-icon">
                                 <button type="submit">
-                                    <img src="/assets/images/add_white_24dp.svg" alt="+" />
+                                    <img src="/assets/images/add_white_24dp.svg" alt="+"/>
                                 </button>
                             </div>
 
                             <div class="bookmark-info flex">
-                                <input type="hidden" name="categoryId" value={category.id} />
+                                <input type="hidden" name="categoryId" value={category.id}/>
                                 <div class="bookmark-info-label">
                                     <input
                                         type="text"
@@ -264,7 +264,7 @@
     {#if isEditing}
         <div class="flex flex-col space-y-1">
             <button type="button" class="glass p-2 w-10 rounded-md" on:click={addCategory}>
-                <img src="/assets/images/add_white_24dp.svg" alt="+" />
+                <img src="/assets/images/add_white_24dp.svg" alt="+"/>
             </button>
 
             <button
@@ -273,7 +273,7 @@
                 on:click={importData}
                 title="Import"
             >
-                <img src="/assets/images/file_upload_white_24dp.svg" alt="+" />
+                <img src="/assets/images/file_upload_white_24dp.svg" alt="+"/>
             </button>
 
             <button
@@ -282,7 +282,7 @@
                 on:click={exportData}
                 title="Export"
             >
-                <img src="/assets/images/file_download_white_24dp.svg" alt="+" />
+                <img src="/assets/images/file_download_white_24dp.svg" alt="+"/>
             </button>
         </div>
     {/if}
