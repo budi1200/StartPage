@@ -240,40 +240,4 @@
     .bg {
         background-image: url("/assets/images/bg/9490e8fu9oi61.png");
     }
-
-    @-webkit-keyframes background-mist-anim {
-        0% {
-            background-position-x: 0;
-        }
-        100% {
-            background-position-x: 50000000px;
-        }
-    }
-
-    @keyframes background-mist-anim {
-        0% {
-            background-position-x: 0;
-        }
-        100% {
-            background-position-x: 50000000px;
-        }
-    }
-
-    @-webkit-keyframes background-mist-anim2 {
-        0% {
-            background-position-x: 0;
-        }
-        100% {
-            background-position-x: -50000000px;
-        }
-    }
-
-    @keyframes background-mist-anim2 {
-        0% {
-            background-position-x: 0;
-        }
-        100% {
-            background-position-x: -50000000px;
-        }
-    }
 </style>

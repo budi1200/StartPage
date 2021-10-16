@@ -47,7 +47,7 @@
     }
 
     .bookmark-info-label {
-        @apply transform-gpu translate-y-191 transition-transform duration-200 ease-in-out;
+        @apply text-base transform-gpu translate-y-191 transition-transform duration-200 ease-in-out;
         backface-visibility: hidden;
     }
 

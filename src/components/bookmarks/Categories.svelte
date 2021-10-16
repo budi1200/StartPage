@@ -204,7 +204,7 @@
                     />
                 </h3>
             {:else}
-                <h3 class="mb-1 text-white">{category.label}</h3>
+                <h3 class="mb-1 text-white text-base">{category.label}</h3>
             {/if}
 
             <ul>
