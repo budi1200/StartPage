@@ -47,4 +47,4 @@ jobs:
         run: npm install chrome-webstore-upload-cli
         
       - name: Upload Extension
-        run: npx chrome-webstore-upload-cli --source zipped.zip --extension-id anbclhoojgdmafmimakfpmklcpnbibhg --client-id ${{ secrets.CLIENT_ID }} --client-secret ${{ secrets.CLIENT_SECRET }} --refresh-token ${{ secrets.REFRESH_TOKEN }}
+        run: npx chrome-webstore-upload-cli upload --source zipped.zip --extension-id anbclhoojgdmafmimakfpmklcpnbibhg --client-id ${{ secrets.CLIENT_ID }} --client-secret ${{ secrets.CLIENT_SECRET }} --refresh-token ${{ secrets.REFRESH_TOKEN }} --auto-publish
