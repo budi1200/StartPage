@@ -44,4 +44,4 @@ jobs:
           dest: zipped.zip
         
       - name: Upload Extension
-        run: npx chrome-webstore-upload-cli upload --source zipped.zip --extension-id anbclhoojgdmafmimakfpmklcpnbibhg --client-id ${{ secrets.CLIENT_ID }} --refresh-token ${{ secrets.REFRESH_TOKEN }} --auto-publish
+        run: npx chrome-webstore-upload-cli upload --source zipped.zip --extension-id anbclhoojgdmafmimakfpmklcpnbibhg --client-id ${{ secrets.CLIENT_ID }} --refresh-token ${{ secrets.REFRESH_TOKEN }} --auto-publish --trusted-testers
