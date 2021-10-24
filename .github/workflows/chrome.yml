@@ -42,9 +42,6 @@ jobs:
         with:
           files: dist/ manifest.json
           dest: zipped.zip
-      
-      - name: Install webstore cli
-        run: npm install chrome-webstore-upload-cli
         
       - name: Upload Extension
         run: npx chrome-webstore-upload-cli upload --source zipped.zip --extension-id anbclhoojgdmafmimakfpmklcpnbibhg --client-id ${{ secrets.CLIENT_ID }} --refresh-token ${{ secrets.REFRESH_TOKEN }} --auto-publish
