@@ -43,11 +43,8 @@ jobs:
           files: dist/ manifest.json
           dest: zipped.zip
       
-      - name: Upload & release
-        uses: mnao305/chrome-extension-upload@1.1.1
-        with:
-          file-path: zipped.zip
-          extension-id: anbclhoojgdmafmimakfpmklcpnbibhg
-          client-id: ${{ secrets.CLIENT_ID }}
-          client-secret: ${{ secrets.CLIENT_SECRET }}
-          refresh-token: ${{ secrets.REFRESH_TOKEN }}
+      - name: Install webstore cli
+        run: npm install chrome-webstore-upload-cli
+        
+      - name: Upload Extension
+        run: npx npm install chrome-webstore-upload-cli --source zipped.zip --extension-id anbclhoojgdmafmimakfpmklcpnbibhg --client-id ${{ secrets.CLIENT_ID }} --client-secret ${{ secrets.CLIENT_SECRET }} --refresh-token ${{ secrets.REFRESH_TOKEN }}
