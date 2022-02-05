@@ -1,23 +1,27 @@
 {
-    "manifest_version": 2,
-    "name": "Bunker",
-    "version": "3.0.1",
-    "description": "A browser extension for Bunker, a start page.",
-    "browser_specific_settings": {
-        "gecko": {
-            "id": "{5f3326f2-ff61-4187-a700-b8d0262f10d4}",
-            "strict_min_version": "90.0"
-        }
-    },
-    "chrome_url_overrides": {
-        "newtab": "index.html"
-    },
-    "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAofyEnQe4GTGuOvLwaTDc1RqDwa+DogDHGbWXJ+NQpqNYd4S9RLT16rGfju75BFilE3G03m/xI9NZNUJ5XMlMiOciGsmPNZTcNGBZcDVKxX6YNFN1awgAlqL0tGcqOVGVnpUJSjG1MzwCykm9Pm4wHUcb0c4FL0BhdeIuWP0BvfWkRAdkVYwXHXBsneXpoQbOUuLtn1cGUj0VLN/8gxfbonSIql98eQKY079181lpLQRIJG7ilGJePAtLosU6WTFC9tEH7FnWY2eCkHnW2O5Lp4k55nhsaPry1z0wyEMI449cpFckAgZKRMnUT7hf56KmtmqgMNftBnYb0BxxdfOWiwIDAQAB",
-    "oauth2": {
-        "client_id": "15939700739-sa3ojuvchrq30sepr3uudj4p9kbm3ts1.apps.googleusercontent.com",
-        "scopes": ["https://www.googleapis.com/auth/drive.appdata", "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive.install"]
-    },
-    "permissions": [
-        "identity"
+  "manifest_version": 2,
+  "name": "Bunker",
+  "version": "3.1.0",
+  "description": "A browser extension for Bunker, a start page.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{5f3326f2-ff61-4187-a700-b8d0262f10d4}",
+      "strict_min_version": "90.0"
+    }
+  },
+  "chrome_url_overrides": {
+    "newtab": "index.html"
+  },
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAofyEnQe4GTGuOvLwaTDc1RqDwa+DogDHGbWXJ+NQpqNYd4S9RLT16rGfju75BFilE3G03m/xI9NZNUJ5XMlMiOciGsmPNZTcNGBZcDVKxX6YNFN1awgAlqL0tGcqOVGVnpUJSjG1MzwCykm9Pm4wHUcb0c4FL0BhdeIuWP0BvfWkRAdkVYwXHXBsneXpoQbOUuLtn1cGUj0VLN/8gxfbonSIql98eQKY079181lpLQRIJG7ilGJePAtLosU6WTFC9tEH7FnWY2eCkHnW2O5Lp4k55nhsaPry1z0wyEMI449cpFckAgZKRMnUT7hf56KmtmqgMNftBnYb0BxxdfOWiwIDAQAB",
+  "oauth2": {
+    "client_id": "15939700739-sa3ojuvchrq30sepr3uudj4p9kbm3ts1.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/drive.appdata",
+      "https://www.googleapis.com/auth/drive.file",
+      "https://www.googleapis.com/auth/drive.install"
     ]
+  },
+  "permissions": [
+    "identity"
+  ]
 }

@@ -238,6 +238,6 @@
     }
 
     .bg {
-        background-image: url("/assets/images/bg/9490e8fu9oi61.png");
+        background-image: url("/assets/images/bg/9490e8fu9oi61.webp");
     }
 </style>
