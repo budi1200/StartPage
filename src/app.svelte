@@ -198,9 +198,9 @@
         await localStorage.setItem(LAST_SYNC_NAME, Date.now().toString())
     }
 
-    onMount(() => {
-        googleLogin()
-    })
+    // onMount(() => {
+    //     googleLogin()
+    // })
 </script>
 
 <svelte:head>
