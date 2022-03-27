@@ -18,10 +18,14 @@ jobs:
             node-version: '16'
 
       - name: Install Dependencies
-        run: npm install
+        uses: borales/actions-yarn@v2.3.0
+        with:
+          cmd: install
       
       - name: Build project
-        run: npm run build
+        uses: borales/actions-yarn@v2.3.0
+        with:
+          cmd: build
       
       #- name: Copy manifest to build folder
       #  run: cp ./manifest.json ./dist/
