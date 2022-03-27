@@ -23,8 +23,8 @@ jobs:
       - name: Build project
         run: npm run build
       
-      - name: Copy manifest to build folder
-        run: cp ./manifest.json ./dist/
+      #- name: Copy manifest to build folder
+      #  run: cp ./manifest.json ./dist/
 
       - name: "web-ext build"
         id: web-ext-build
