@@ -12,7 +12,7 @@
 
     // Google stuff
     const CLIENT_ID = "15939700739-sa3ojuvchrq30sepr3uudj4p9kbm3ts1.apps.googleusercontent.com"
-    const SCOPES = "https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.install"
+    const SCOPES = "https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.file"
     const AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth?"
 
     const LAST_SYNC_NAME = "startpage-lastsync"
