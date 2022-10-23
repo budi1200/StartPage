@@ -1,6 +1,9 @@
 <script lang="ts">
-    import { createEventDispatcher } from "svelte";
     import dayjs from "dayjs";
+    import {isEditing, isSyncing, authToken} from "@/store/data.store";
+    import IconButton from "@/components/elements/IconButton.svelte";
+    import {saveData, loadCloudData, loadLocalData} from "@/util/data-manager";
+    import {googleLogin} from "@/api/auth";
 
     let today = dayjs();
 
@@ -11,79 +14,47 @@
 
     updateTime();
 
-    export let isEditing;
-    export let isLoggedIn;
-    export let isSyncing;
+    const editBtnClick = () => {
+        googleLogin(true)
+        $isEditing = true
+    }
 
-    const dispatch = createEventDispatcher();
+    const saveBtnClick = () => {
+        saveData()
+        $isEditing = false
+    }
+
+    const cancelBtnClick = () => {
+        loadLocalData()
+        $isEditing = false
+    }
 </script>
 
 <div id="clock" class="relative text-white mb-3">
-    <h1 class="text-5xl">{today.format("HH:mm:ss")}</h1>
-    <h3 class="text-base">
-        {today.format("ddd, D MMM YYYY")}
+    <h1 class="text-5xl select-none tracking-wide">{today.format("HH:mm:ss")}</h1>
+    <div class="text-base select-none tracking-widest flex items-center">
+        {today.format("dddd, D. MMMM YYYY")}
 
-        {#if isSyncing}
-            <img src="/assets/images/sync.svg" alt="Syncing" class="animate-spin inline"/>
+        {#if $isSyncing}
+            <span class="material-icons-outlined !leading-none animate-spin ml-2">sync</span>
         {/if}
 
         <div
             id="settingscog"
-            class={`flex items-center ml-2 ${
-                !isEditing ? "opacity-0" : ""
-            } hover:opacity-100 transition-all duration-200`}
+            class={`inline-flex gap-2 items-center ml-2 ${!$isEditing ? "opacity-0" : ""} hover:opacity-100 transition-all duration-200`}
         >
-            {#if !isEditing}
-                <button
-                    on:click={() => dispatch("enable", true)}
-                    title="Edit"
-                    class="glass p-2 rounded-md"
-                >
-                    <img src="/assets/images/settings_white_24dp.svg" alt="+" />
-                </button>
+            {#if !$isEditing}
+                <IconButton on:click={editBtnClick} title="Edit" icon="settings"/>
             {:else}
-                <button
-                    on:click={() => dispatch("status", "save")}
-                    title="Save"
-                    class="p-2 rounded-md glass"
-                >
-                    <img src="/assets/images/check_white_24dp.svg" alt="+" />
-                </button>
+                <IconButton on:click={saveBtnClick} title="Save" icon="check"/>
+                <IconButton on:click={cancelBtnClick} title="Cancel" icon="close"/>
 
-                <button
-                    on:click={() => dispatch("status", "cancel")}
-                    title="Cancel"
-                    class="ml-2 p-2 rounded-md glass focus:outline-none"
-                >
-                    <img src="/assets/images/close_white_24dp.svg" alt="+" />
-                </button>
-
-                {#if isLoggedIn}
-                    <button on:click={() => dispatch("download")}  class="ml-2 p-2 rounded-md glass focus:outline-none" title="Fetch cloud data">
-                        <img src="/assets/images/cloud.svg" alt="Syncing" />
-                    </button>
+                {#if $authToken !== undefined}
+                    <IconButton on:click={loadCloudData} title="Fetch cloud data" icon="cloud"/>
                 {:else}
-                    <button on:click={() => dispatch("clickLogin")} class="ml-2 p-2 rounded-md glass focus:outline-none" title="Click to login">
-                        <img src="/assets/images/cloud-off.svg" alt="Not Syncing" />
-                    </button>
+                    <IconButton on:click={() => googleLogin(true)} title="Google Login" icon="cloud_off"/>
                 {/if}
-
             {/if}
         </div>
-    </h3>
+    </div>
 </div>
-
-<style lang="postcss">
-    #settingscog {
-        display: inline;
-    }
-
-    #settingscog button:hover {
-        background-color: rgba(27, 26, 27, 0.445);
-        box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034), 0 6.7px 5.3px rgba(0, 0, 0, 0.048);
-    }
-
-    #settingscog img {
-        height: 12px;
-    }
-</style>
