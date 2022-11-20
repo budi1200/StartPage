@@ -4,9 +4,9 @@
     import {getFaviconUrl} from "@/util/favicon-helper";
 
     export let bookmarkData: IBookmark;
+    let urlObj;
 
-    let urlObj = new URL(bookmarkData.url)
-    let favicon = getFaviconUrl(bookmarkData.iconType, urlObj.host);
+    $: urlObj = new URL(bookmarkData.url)
 </script>
 
 <a href={bookmarkData.url} class="w-full">
@@ -14,7 +14,7 @@
         title={bookmarkData.label}
         subtitle={urlObj.href.replace(/https?:\/\//i, "").replace(/\/+$/, "")}
     >
-        <img slot="icon" class="w-4 h-4" src={favicon} alt="" loading="lazy" decoding="async"/>
+        <img slot="icon" class="w-4 h-4" src={getFaviconUrl(bookmarkData.iconType, urlObj.host)} alt="" loading="lazy" decoding="async"/>
     </FancyCard>
 </a>
 
