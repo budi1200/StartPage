@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "StartPage",
-    "version": "3.3.3",
+    "version": "3.3.4",
     "description": "A startpage extension.",
     "browser_specific_settings": {
         "gecko": {
