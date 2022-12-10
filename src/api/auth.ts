@@ -1,27 +1,33 @@
-import {AUTH_URL, CLIENT_ID, SCOPES} from "@/constants";
-import {authToken} from "@/store/data.store";
-import * as browser from "webextension-polyfill";
+import { AUTH_URL, CLIENT_ID, SCOPES } from "@/constants";
+import { authToken } from "@/store/data.store";
 
 const extractAccessToken = (redirectUri) => {
-    let m = redirectUri.match(/[#?](.*)/);
-    if (!m || m.length < 1) return null;
-    let params = new URLSearchParams(m[1].split("#")[0]);
+    let match = redirectUri.match(/[#?](.*)/);
+    if (!match || match.length < 1) return null;
+    let params = new URLSearchParams(match[1].split("#")[0]);
     return params.get("access_token");
 };
 
-export const googleLogin = (isInteractive: boolean) => {
+export const googleLogin = async (isInteractive: boolean) => {
     let token = null;
+
+    if (globalThis.browser === undefined) {
+        console.log("Polyfill not supported");
+        return;
+    }
+
+    let { identity } = await import("webextension-polyfill");
 
     const auth_params = {
         client_id: CLIENT_ID,
-        redirect_uri: browser.identity.getRedirectURL(),
+        redirect_uri: identity.getRedirectURL(),
         response_type: "token",
         scope: SCOPES,
     };
 
     const url = new URLSearchParams(Object.entries(auth_params)).toString();
 
-    browser.identity
+    identity
         .launchWebAuthFlow({
             url: AUTH_URL + url,
             interactive: isInteractive,
