@@ -4,19 +4,19 @@
 </script>
 
 <div
-    class={`card flex items-center h-12 transform-gpu transition-all ease-in-out duration-200 rounded-md px-2 hover:bg-hoverGrey ${$$props.class}`}
+    class={`card flex h-12 transform-gpu items-center rounded-md px-2 transition-all duration-200 ease-in-out hover:bg-hoverGrey ${$$props.class}`}
     on:click
 >
-    <div class="w-4 h-4 m-3 min-w-4 flex justify-center items-center">
-        <slot name="icon"/>
+    <div class="m-3 flex h-4 w-4 min-w-4 items-center justify-center">
+        <slot name="icon" />
     </div>
 
     <div>
-        <h4 class="text-base translate-y-2 transform-gpu transition-all ease-in-out duration-200">
+        <h4 class="translate-y-2 transform-gpu text-base transition-all duration-200 ease-in-out">
             {title}
         </h4>
         <span
-            class="flex text-xxs opacity-0 h-4 -translate-y-4 transform-gpu transition-all ease-in-out duration-200 overflow-hidden break-all"
+            class="flex h-4 -translate-y-4 transform-gpu overflow-hidden break-all text-xxs opacity-0 transition-all duration-200 ease-in-out"
         >
             {subtitle}
         </span>
@@ -33,6 +33,6 @@
     }
 
     .card:hover span {
-        @apply opacity-80 -translate-y-0.5;
+        @apply -translate-y-0.5 opacity-80;
     }
 </style>

@@ -1,11 +1,11 @@
 <script lang="ts">
     import ModalWrapper from "@/components/elements/ModalWindow.svelte";
     import Input from "@/components/elements/Input.svelte";
-    import Select from 'svelte-select';
-    import {getFaviconUrl} from "@/util/favicon-helper";
-    import type {IBookmark, ICategory} from "@/types";
-    import {IconType} from "@/types";
-    import {v4 as uuidv4} from "uuid";
+    import Select from "svelte-select";
+    import { getFaviconUrl } from "@/util/favicon-helper";
+    import type { IBookmark, ICategory } from "@/types";
+    import { IconType } from "@/types";
+    import { v4 as uuidv4 } from "uuid";
 
     export const openModal = () => {
         // noinspection TypeScriptUnresolvedFunction
@@ -21,40 +21,40 @@
     let selectedIconType = null;
 
     let iconPreviewUrl = null;
-    let iconTypes = Object.keys(IconType).filter((v) => isNaN(Number(v))).map((ico, index) => {
-        const lower = ico.toLowerCase()
-        return {
-            value: index,
-            label: lower[0].toUpperCase() + lower.slice(1)
-        }
-    });
+    let iconTypes = Object.keys(IconType)
+        .filter((v) => isNaN(Number(v)))
+        .map((ico, index) => {
+            const lower = ico.toLowerCase();
+            return {
+                value: index,
+                label: lower[0].toUpperCase() + lower.slice(1),
+            };
+        });
 
     const updateIconPreview = (selectedIco, url) => {
         if (url == "" || url == undefined) return;
 
         try {
-            let tempUrl = new URL(url)
+            let tempUrl = new URL(url);
 
             iconPreviewUrl = getFaviconUrl(IconType[IconType[selectedIco.value]], tempUrl.host);
-
-        } catch (e) {
-        }
-    }
+        } catch (e) {}
+    };
 
     const addBookmark = () => {
         let newBookmark: IBookmark = {
             id: uuidv4(),
             label: bookmarkName,
             url: bookmarkUrl,
-            iconType: IconType[IconType[selectedIconType.value]]
-        }
+            iconType: IconType[IconType[selectedIconType.value]],
+        };
 
-        category.bookmarks = [...category.bookmarks, newBookmark]
+        category.bookmarks = [...category.bookmarks, newBookmark];
         // noinspection TypeScriptUnresolvedFunction
-        modalComponent.closeModal()
-    }
+        modalComponent.closeModal();
+    };
 
-    $: updateIconPreview(selectedIconType, bookmarkUrl)
+    $: updateIconPreview(selectedIconType, bookmarkUrl);
 </script>
 
 <ModalWrapper
@@ -64,9 +64,9 @@
     actionText="Save"
     isActionPending={isLoading}
 >
-    <div class="flex flex-col gap-4 w-72 mb-4">
-        <Input placeholder="Name" bind:value={bookmarkName}/>
-        <Input placeholder="Url" bind:value={bookmarkUrl}/>
+    <div class="mb-4 flex w-72 flex-col gap-4">
+        <Input placeholder="Name" bind:value={bookmarkName} />
+        <Input placeholder="Url" bind:value={bookmarkUrl} />
         <Select
             items={iconTypes}
             bind:value={selectedIconType}
@@ -82,17 +82,16 @@
             --list-background="white"
             --item-color="gray"
             --item-hover-color="black"
-        >
-        </Select>
+        />
 
-        <div class="h-12 flex">
-            <img src={iconPreviewUrl} alt=""/>
+        <div class="flex h-12">
+            <img src={iconPreviewUrl} alt="" />
         </div>
     </div>
 </ModalWrapper>
 
 <style lang="postcss">
     :global(.svelte-select) {
-        border-bottom: 1px solid #9CA3AF !important;
+        border-bottom: 1px solid #9ca3af !important;
     }
 </style>

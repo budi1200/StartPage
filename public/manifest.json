@@ -21,7 +21,5 @@
             "https://www.googleapis.com/auth/drive.install"
         ]
     },
-    "permissions": [
-        "identity"
-    ]
+    "permissions": ["identity"]
 }

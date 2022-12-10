@@ -18,5 +18,5 @@ export interface IStartPageData {
 export enum IconType {
     DUCKDUCKGO,
     GOOGLE,
-    CUSTOM
+    CUSTOM,
 }

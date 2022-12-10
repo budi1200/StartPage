@@ -1,16 +1,16 @@
 // Google Drive API Endpoints
-import {IconType, type IStartPageData} from "@/types";
+import { IconType, type IStartPageData } from "@/types";
 
-export const CORS_PROXY = "https://cors.pojej.se"
-export const DRIVE_FILES_URL = `${CORS_PROXY}/https://www.googleapis.com/drive/v3/files`
-export const DRIVE_UPLOAD_URL = `${CORS_PROXY}/https://www.googleapis.com/upload/drive/v3/files`
+export const CORS_PROXY = "https://cors.pojej.se";
+export const DRIVE_FILES_URL = `${CORS_PROXY}/https://www.googleapis.com/drive/v3/files`;
+export const DRIVE_UPLOAD_URL = `${CORS_PROXY}/https://www.googleapis.com/upload/drive/v3/files`;
 
 // Google stuff
-export const CLIENT_ID = "15939700739-sa3ojuvchrq30sepr3uudj4p9kbm3ts1.apps.googleusercontent.com"
-export const SCOPES = "https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.file"
-export const AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth?"
+export const CLIENT_ID = "15939700739-sa3ojuvchrq30sepr3uudj4p9kbm3ts1.apps.googleusercontent.com";
+export const SCOPES = "https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.file";
+export const AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth?";
 
-export const LAST_SYNC_NAME = "startpage-lastsync"
+export const LAST_SYNC_NAME = "startpage-lastsync";
 export const LOCAL_KEY = "startpage-categories";
 
 export const defaultPageData: IStartPageData = {
@@ -77,4 +77,3 @@ export const defaultPageData: IStartPageData = {
         },
     ],
 };
-

@@ -16,24 +16,27 @@ export const googleLogin = (isInteractive: boolean) => {
         client_id: CLIENT_ID,
         redirect_uri: browser.identity.getRedirectURL(),
         response_type: "token",
-        scope: SCOPES
+        scope: SCOPES,
     };
 
     const url = new URLSearchParams(Object.entries(auth_params)).toString();
 
-    browser.identity.launchWebAuthFlow({
-        url: AUTH_URL + url,
-        interactive: isInteractive
-    }).then((res) => {
-        const extractedToken = extractAccessToken(res)
+    browser.identity
+        .launchWebAuthFlow({
+            url: AUTH_URL + url,
+            interactive: isInteractive,
+        })
+        .then((res) => {
+            const extractedToken = extractAccessToken(res);
 
-        if (extractedToken == null) {
-            throw "Authorization failure"
-        }
+            if (extractedToken == null) {
+                throw "Authorization failure";
+            }
 
-        token = extractedToken
-        authToken.set(extractedToken)
-    }).catch((err) => {
-        console.log(err)
-    })
-}
+            token = extractedToken;
+            authToken.set(extractedToken);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+};

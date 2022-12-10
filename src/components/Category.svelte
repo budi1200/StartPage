@@ -1,7 +1,7 @@
 <script lang="ts">
-    import {isEditing} from "@/store/data.store";
-    import type {ICategory} from "@/types";
-    import {deleteCategory} from "@/util/category-manager";
+    import { isEditing } from "@/store/data.store";
+    import type { ICategory } from "@/types";
+    import { deleteCategory } from "@/util/category-manager";
     import Bookmark from "./Bookmark.svelte";
     import AddBookmarkModal from "@/components/modals/AddBookmarkModal.svelte";
     import FancyCard from "@/components/elements/FancyCard.svelte";
@@ -12,22 +12,22 @@
     let addBookmarkModal: AddBookmarkModal;
 
     const deleteBookmark = (id: string) => {
-        let index = categoryData.bookmarks.findIndex(x => x.id === id)
+        let index = categoryData.bookmarks.findIndex((x) => x.id === id);
 
         if (index == -1) {
             // TODO: Toasty
             return;
         }
 
-        categoryData.bookmarks.splice(index, 1)
-        categoryData.bookmarks = categoryData.bookmarks // Refresh state
-    }
+        categoryData.bookmarks.splice(index, 1);
+        categoryData.bookmarks = categoryData.bookmarks; // Refresh state
+    };
 </script>
 
-<article class="z-10 glass w-72 rounded-md p-4">
+<article class="glass z-10 w-72 rounded-md p-4">
     {#if $isEditing}
         <h3>
-            <Input bind:value={categoryData.label}/>
+            <Input bind:value={categoryData.label} />
         </h3>
     {:else}
         <h3 class="mb-1 text-base">{categoryData.label}</h3>
@@ -35,11 +35,11 @@
 
     <div class="flex flex-col gap-0.5">
         {#each categoryData.bookmarks as bookmark}
-            <div class="flex justify-between items-center">
-                <Bookmark bookmarkData={bookmark}/>
+            <div class="flex items-center justify-between">
+                <Bookmark bookmarkData={bookmark} />
                 {#if $isEditing}
                     <span
-                        class="material-icons-outlined !text-base !leading-none ml-2 p-2 hover:bg-hoverGrey rounded-md transition-all cursor-pointer"
+                        class="material-icons-outlined ml-2 cursor-pointer rounded-md p-2 !text-base !leading-none transition-all hover:bg-hoverGrey"
                         on:click={() => deleteBookmark(bookmark.id)}
                     >
                         delete
@@ -68,6 +68,5 @@
             </FancyCard>
         {/if}
     </div>
-
 </article>
-<AddBookmarkModal bind:this={addBookmarkModal} bind:category={categoryData}/>
+<AddBookmarkModal bind:this={addBookmarkModal} bind:category={categoryData} />

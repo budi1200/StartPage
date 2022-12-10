@@ -1,4 +1,4 @@
-import {IconType} from "@/types";
+import { IconType } from "@/types";
 
 export const getFaviconUrl = (type: IconType, domain: string) => {
     let url = null;
@@ -17,4 +17,4 @@ export const getFaviconUrl = (type: IconType, domain: string) => {
     }
 
     return url;
-}
+};
