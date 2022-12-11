@@ -25,6 +25,10 @@
             src: url("/assets/fonts/Manrope-Regular.woff2");
         }
     </style>
+
+    {#if import.meta.env.DEV}
+        <title>Dev StartPage</title>
+    {/if}
 </svelte:head>
 
 <div class="-z-1 fixed top-0 left-0 h-full w-full bg-[url('/assets/images/bg/9490e8fu9oi61.webp')] bg-cover" />

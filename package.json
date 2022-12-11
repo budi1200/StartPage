@@ -31,10 +31,8 @@
         "serve": "vite preview"
     },
     "dependencies": {
-        "@material-design-icons/font": "^0.14.2",
         "axios": "^1.2.1",
         "dayjs": "^1.11.7",
-        "svelte-select": "^5.0.0-beta.37",
         "uuid": "^9.0.0",
         "vite-tsconfig-paths": "^3.6.0"
     }

@@ -6,6 +6,8 @@
     import AddBookmarkModal from "@/components/modals/AddBookmarkModal.svelte";
     import FancyCard from "@/components/elements/FancyCard.svelte";
     import Input from "@/components/elements/Input.svelte";
+    import IconDelete from "@/components/icons/IconDelete.svelte";
+    import IconAdd from "@/components/icons/IconAdd.svelte";
 
     export let categoryData: ICategory;
 
@@ -38,12 +40,12 @@
             <div class="flex items-center justify-between">
                 <Bookmark bookmarkData={bookmark} />
                 {#if $isEditing}
-                    <span
-                        class="material-icons-outlined ml-2 cursor-pointer rounded-md p-2 !text-base !leading-none transition-all hover:bg-hoverGrey"
+                    <button
+                        class="ml-2 cursor-pointer rounded-md p-2 transition-all hover:bg-hoverGrey"
                         on:click={() => deleteBookmark(bookmark.id)}
                     >
-                        delete
-                    </span>
+                        <IconDelete />
+                    </button>
                 {/if}
             </div>
         {/each}
@@ -55,7 +57,7 @@
                 subtitle="Add a new bookmark"
                 on:click={() => addBookmarkModal.openModal()}
             >
-                <span slot="icon" class="material-icons-outlined !text-base !leading-none">add</span>
+                <IconAdd slot="icon" />
             </FancyCard>
 
             <FancyCard
@@ -64,7 +66,7 @@
                 subtitle="Delete category"
                 on:click={() => deleteCategory(categoryData.id)}
             >
-                <span slot="icon" class="material-icons-outlined !text-base !leading-none">delete</span>
+                <IconDelete slot="icon" />
             </FancyCard>
         {/if}
     </div>

@@ -6,6 +6,7 @@
 <div
     class={`card flex h-12 transform-gpu items-center rounded-md px-2 transition-all duration-200 ease-in-out hover:bg-hoverGrey ${$$props.class}`}
     on:click
+    on:keypress={() => {}}
 >
     <div class="m-3 flex h-4 w-4 min-w-4 items-center justify-center">
         <slot name="icon" />

@@ -1,11 +1,11 @@
 <script lang="ts">
     import ModalWrapper from "@/components/elements/ModalWindow.svelte";
     import Input from "@/components/elements/Input.svelte";
-    import Select from "svelte-select";
     import { getFaviconUrl } from "@/util/favicon-helper";
     import type { IBookmark, ICategory } from "@/types";
     import { IconType } from "@/types";
     import { v4 as uuidv4 } from "uuid";
+    import InputSelect from "@/components/elements/InputSelect.svelte";
 
     export const openModal = () => {
         // noinspection TypeScriptUnresolvedFunction
@@ -18,7 +18,7 @@
 
     let bookmarkName: string;
     let bookmarkUrl: string;
-    let selectedIconType = null;
+    let selectedIconType;
 
     let iconPreviewUrl = null;
     let iconTypes = Object.keys(IconType)
@@ -67,24 +67,9 @@
     <div class="mb-4 flex w-72 flex-col gap-4">
         <Input placeholder="Name" bind:value={bookmarkName} />
         <Input placeholder="Url" bind:value={bookmarkUrl} />
-        <Select
-            items={iconTypes}
-            bind:value={selectedIconType}
-            clearable={false}
-            placeholder="Select icon variant"
-            --background="transparent"
-            --border="none"
-            --border-focused="none"
-            --border-hover="none"
-            --border-radius="0"
-            --padding="0"
-            --placeholder-color="#E5E7EB"
-            --list-background="white"
-            --item-color="gray"
-            --item-hover-color="black"
-        />
+        <InputSelect items={iconTypes} bind:value={selectedIconType} placeholder="Select provider" />
 
-        <div class="flex h-12">
+        <div class="flex h-12 justify-center">
             <img src={iconPreviewUrl} alt="" />
         </div>
     </div>

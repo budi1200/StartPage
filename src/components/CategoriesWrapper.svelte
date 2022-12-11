@@ -3,6 +3,9 @@
     import { addCategory } from "@/util/category-manager";
     import { exportData, importData } from "@/util/data-manager";
     import Category from "./Category.svelte";
+    import IconAdd from "@/components/icons/IconAdd.svelte";
+    import IconUpload from "@/components/icons/IconUpload.svelte";
+    import IconDownload from "@/components/icons/IconDownload.svelte";
 </script>
 
 <section class="flex select-none flex-wrap items-baseline gap-4">
@@ -15,15 +18,15 @@
     {#if $isEditing}
         <div class="flex flex-col space-y-1">
             <button type="button" class="glass flex w-10 rounded-md p-2" on:click={addCategory}>
-                <span class="material-icons-outlined !leading-none text-white">add</span>
+                <IconAdd />
             </button>
 
             <button type="button" class="glass flex w-10 rounded-md p-2" on:click={importData} title="Import">
-                <span class="material-icons-outlined !leading-none text-white">file_upload</span>
+                <IconUpload />
             </button>
 
             <button type="button" class="glass flex w-10 rounded-md p-2" on:click={exportData} title="Export">
-                <span class="material-icons-outlined !leading-none text-white">file_download</span>
+                <IconDownload />
             </button>
         </div>
     {/if}

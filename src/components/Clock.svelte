@@ -4,6 +4,12 @@
     import IconButton from "@/components/elements/IconButton.svelte";
     import { saveData, loadCloudData, loadLocalData } from "@/util/data-manager";
     import { googleLogin } from "@/api/auth";
+    import IconArrowPath from "@/components/icons/IconArrowPath.svelte";
+    import IconSettings from "@/components/icons/IconSettings.svelte";
+    import IconClose from "@/components/icons/IconClose.svelte";
+    import IconCheck from "@/components/icons/IconCheck.svelte";
+    import IconCloud from "@/components/icons/IconCloud.svelte";
+    import IconWarning from "@/components/icons/IconWarning.svelte";
 
     let today = dayjs();
 
@@ -36,25 +42,36 @@
         {today.format("dddd, D. MMMM YYYY")}
 
         {#if $isSyncing}
-            <span class="material-icons-outlined ml-2 animate-spin !leading-none">sync</span>
+            <span class="ml-2 animate-spin">
+                <IconArrowPath />
+            </span>
         {/if}
 
         <div
             id="settingscog"
-            class={`ml-2 inline-flex items-center gap-2 ${
-                !$isEditing ? "opacity-0" : ""
-            } transition-all duration-200 hover:opacity-100`}
+            class:opacity-0={!$isEditing}
+            class={`ml-2 inline-flex items-center gap-2 transition-all duration-200 hover:opacity-100`}
         >
             {#if !$isEditing}
-                <IconButton on:click={editBtnClick} title="Edit" icon="settings" />
+                <IconButton on:click={editBtnClick} title="Edit">
+                    <IconSettings />
+                </IconButton>
             {:else}
-                <IconButton on:click={saveBtnClick} title="Save" icon="check" />
-                <IconButton on:click={cancelBtnClick} title="Cancel" icon="close" />
+                <IconButton on:click={saveBtnClick} title="Save">
+                    <IconCheck />
+                </IconButton>
+                <IconButton on:click={cancelBtnClick} title="Cancel">
+                    <IconClose />
+                </IconButton>
 
                 {#if $authToken !== undefined}
-                    <IconButton on:click={loadCloudData} title="Fetch cloud data" icon="cloud" />
+                    <IconButton on:click={loadCloudData} title="Fetch cloud data">
+                        <IconCloud />
+                    </IconButton>
                 {:else}
-                    <IconButton on:click={() => googleLogin(true)} title="Google Login" icon="cloud_off" />
+                    <IconButton on:click={() => googleLogin(true)} title="Google Login">
+                        <IconWarning />
+                    </IconButton>
                 {/if}
             {/if}
         </div>

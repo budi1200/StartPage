@@ -1,12 +1,14 @@
 <script lang="ts">
     import { clickOutside } from "@/util/click-outside";
     import { fade, fly } from "svelte/transition";
+    import IconClose from "@/components/icons/IconClose.svelte";
 
     export let title: string;
     export let actionText: string;
     export let onAction: () => void;
     export let isActionPending = false;
     let isOpen = false;
+    let ref;
 
     export const openModal = () => {
         isOpen = true;
@@ -14,6 +16,12 @@
 
     export const closeModal = () => {
         isOpen = false;
+    };
+
+    const clickOutsideHandler = (e) => {
+        if (e.detail === ref) {
+            isOpen = false;
+        }
     };
 </script>
 
@@ -24,8 +32,9 @@
     >
         <div
             class="container pointer-events-none relative w-auto"
+            bind:this={ref}
             use:clickOutside
-            on:outclick={closeModal}
+            on:outclick={clickOutsideHandler}
             in:fly={{ y: -100, duration: 200 }}
             out:fly={{ y: -100, duration: 200 }}
         >
@@ -41,10 +50,10 @@
                     </h5>
                     <button
                         type="button"
-                        class="flex h-4 w-4 items-center justify-center rounded-none border-none p-1 hover:text-black hover:no-underline focus:shadow-none focus:outline-none"
+                        class="flex h-6 w-6 items-center justify-center rounded-none border-none transition-all hover:text-gray-400 hover:no-underline focus:shadow-none focus:outline-none"
                         on:click={closeModal}
                     >
-                        <span class="material-icons-outlined text-white">close</span>
+                        <IconClose />
                     </button>
                 </div>
 
@@ -59,9 +68,7 @@
                 >
                     <button
                         type="button"
-                        data-mdb-ripple="true"
-                        data-mdb-ripple-color="light"
-                        class="inline-block rounded bg-purple-600 px-6 py-2.5 text-xs font-medium uppercase leading-tight text-white shadow-md transition duration-150 ease-in-out hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg"
+                        class="inline-block rounded border border-white/20 px-6 py-2.5 text-xs font-medium uppercase leading-tight text-white shadow-md transition duration-150 ease-in-out hover:bg-white/20 hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:bg-white/10 active:shadow-lg"
                         on:click={closeModal}
                     >
                         Cancel
@@ -69,7 +76,7 @@
 
                     <button
                         type="button"
-                        class="ml-1 inline-block rounded bg-blue-600 px-6 py-2.5 text-xs font-medium uppercase leading-tight text-white shadow-md transition duration-150 ease-in-out hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg disabled:bg-gray-400"
+                        class="ml-1 inline-block rounded border border-white/20 bg-hoverGrey px-6 py-2.5 text-xs font-medium uppercase leading-tight text-white shadow-md transition duration-150 ease-in-out hover:bg-gray-600 hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg disabled:bg-gray-400"
                         on:click={onAction}
                         disabled={isActionPending}
                     >

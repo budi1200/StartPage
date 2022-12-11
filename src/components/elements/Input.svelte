@@ -3,4 +3,9 @@
     export let value;
 </script>
 
-<input type="text" bind:value {placeholder} class="mb-1 border-b border-gray-400 bg-transparent placeholder-gray-200" />
+<input
+    type="text"
+    bind:value
+    {placeholder}
+    class="mb-1 border-b border-gray-400 bg-transparent px-0.5 placeholder-gray-200"
+/>
