@@ -7,7 +7,7 @@ export const DRIVE_UPLOAD_URL = `${CORS_PROXY}/https://www.googleapis.com/upload
 
 // Google stuff
 export const CLIENT_ID = "15939700739-sa3ojuvchrq30sepr3uudj4p9kbm3ts1.apps.googleusercontent.com";
-export const SCOPES = "https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.file";
+export const SCOPES = "https://www.googleapis.com/auth/drive.appdata";
 export const AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth?";
 
 export const LAST_SYNC_NAME = "startpage-lastsync";
