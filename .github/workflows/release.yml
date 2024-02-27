@@ -10,25 +10,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v1
-      
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v2.1.5
-        with:
-            node-version: '18'
+        uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v1
 
       - name: Install Dependencies
-        uses: borales/actions-yarn@v3.0.0
-        with:
-          cmd: install
-      
+        run: bun install
+
       - name: Build project
-        uses: borales/actions-yarn@v3.0.0
-        with:
-          cmd: build
-      
-      #- name: Copy manifest to build folder
-      #  run: cp ./manifest.json ./dist/
+        run: bun run build
 
       - name: "web-ext build"
         id: web-ext-build
@@ -46,7 +36,7 @@ jobs:
           channel: unlisted
           apiKey: ${{ secrets.AMO_SIGN_KEY }}
           apiSecret: ${{ secrets.AMO_SIGN_SECRET }}
-          apiUrlPrefix: https://addons.mozilla.org/api/v4 
+          apiUrlPrefix: https://addons.mozilla.org/api/v4
 
       - name: "Create Release"
         uses: softprops/action-gh-release@v1
