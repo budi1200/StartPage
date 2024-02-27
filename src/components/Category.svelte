@@ -41,12 +41,12 @@
 
 <article class="glass z-10 w-72 rounded-md border border-transparent p-4">
     {#if isEditing.value}
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between gap-2">
             <h3>
                 <Input bind:value={categoryData.label} placeholder={categoryData.label} />
             </h3>
 
-            <div>
+            <div class="flex gap-2">
                 {#if listIndex > 0}
                     <button
                         class="cursor-pointer rounded-md p-1 transition-all hover:bg-hoverGrey"
