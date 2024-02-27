@@ -1,5 +1,5 @@
-import "./tailwind.pcss";
-import "./style.pcss";
+import "./style.css";
 import App from "./app.svelte";
+import { mount } from "svelte";
 
-new App({ target: document.body });
+mount(App, { target: document.body });

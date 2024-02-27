@@ -1,12 +1,11 @@
-import { get } from "svelte/store";
-import { authToken } from "@/store/data.store";
+import { authToken } from "@/store/data.store.svelte";
 import axios from "axios";
 import { DRIVE_FILES_URL, DRIVE_UPLOAD_URL } from "@/constants";
 
 const getAxiosOptions = () => {
     return {
         headers: {
-            Authorization: `Bearer ${get(authToken)}`,
+            Authorization: `Bearer ${authToken.value}`,
         },
     };
 };
@@ -32,7 +31,7 @@ export const createCloudFile = async () => {
             parents: ["appDataFolder"],
             name: "startpage_data.json",
         },
-        getAxiosOptions()
+        getAxiosOptions(),
     );
 
     return result.data.id;
@@ -61,7 +60,7 @@ export const getCloudData = async () => {
     return result.data;
 };
 
-export const updateCloudData = async (fileId: string, detail) => {
+export const updateCloudData = async (fileId: string, detail: any) => {
     const result = await axios.patch(DRIVE_UPLOAD_URL + "/" + fileId + "?uploadType=media", detail, getAxiosOptions());
 
     if (result.status !== 200) {

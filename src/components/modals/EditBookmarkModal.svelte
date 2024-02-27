@@ -1,9 +1,8 @@
 <script lang="ts">
     import Input from "@/components/elements/Input.svelte";
     import { getFaviconPreviewUrl, iconTypes, safeParseUrl } from "@/util/favicon-helper";
-    import { type IBookmark, type ICategory, IconType } from "@/types";
+    import { type IBookmark, IconType } from "@/types";
     import InputSelect from "@/components/elements/InputSelect.svelte";
-    import { nanoid } from "nanoid";
 
     export const openModal = () => {
         modalComponent?.showModal();
@@ -11,22 +10,23 @@
 
     const closeModal = () => {
         modalComponent?.close();
-        bookmarkName = undefined;
-        bookmarkUrl = undefined;
-        selectedIconType = IconType.DUCKDUCKGO;
+        bookmarkName = bookmark?.title;
+        bookmarkUrl = bookmark?.url;
+        selectedIconType = bookmark.iconType;
+        customUrl = bookmark.iconType === IconType.CUSTOM ? bookmark.host : "";
     };
 
-    const { category } = $props<{ category: ICategory }>();
+    let { bookmark } = $props<{ bookmark: IBookmark }>();
     let modalComponent = $state<HTMLDialogElement>();
 
-    let bookmarkName = $state<string>();
-    let bookmarkUrl = $state<string>();
-    let selectedIconType = $state<IconType>();
-    let customUrl = $state<string>();
+    let bookmarkName = $state<string>(bookmark?.title);
+    let bookmarkUrl = $state<string>(bookmark?.url);
+    let selectedIconType = $state<IconType>(bookmark.iconType);
+    let customUrl = $state<string>(bookmark.iconType === IconType.CUSTOM ? bookmark.host : "");
 
     const iconPreviewUrl = $derived.by(() => getFaviconPreviewUrl(bookmarkUrl, selectedIconType, customUrl));
 
-    const addBookmark = (e: SubmitEvent) => {
+    const editBookmark = (e: SubmitEvent) => {
         if (!bookmarkName || !bookmarkUrl || !selectedIconType) {
             e.preventDefault();
             alert("Please fill all fields");
@@ -40,20 +40,16 @@
             return;
         }
 
-        let newBookmark: IBookmark = {
-            id: nanoid(),
-            title: bookmarkName,
-            subtitle: urlObj.href.replace(/https?:\/\//i, "").replace(/\/$/, ""),
-            url: bookmarkUrl,
-            iconType: selectedIconType,
-            host: selectedIconType === IconType.CUSTOM ? customUrl! : urlObj.host,
-        };
-
-        category.bookmarks.push(newBookmark);
+        // Update bookmark data
+        bookmark.title = bookmarkName;
+        bookmark.subtitle = urlObj.href.replace(/https?:\/\//i, "").replace(/\/$/, "");
+        bookmark.url = bookmarkUrl;
+        bookmark.iconType = selectedIconType;
+        bookmark.host = selectedIconType === IconType.CUSTOM ? customUrl! : urlObj.host;
     };
 </script>
 
-<dialog bind:this={modalComponent} onsubmit={addBookmark} class="bg-transparent">
+<dialog bind:this={modalComponent} onsubmit={editBookmark} class="bg-transparent">
     <form
         method="dialog"
         class="glass relative flex w-full flex-col rounded-md border-none bg-clip-padding p-4 text-white shadow-lg outline-none"

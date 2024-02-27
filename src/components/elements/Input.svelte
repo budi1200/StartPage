@@ -1,6 +1,5 @@
 <script lang="ts">
-    export let placeholder: string;
-    export let value;
+    let { placeholder, value } = $props<{ placeholder: string; value: any }>();
 </script>
 
 <input

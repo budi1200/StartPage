@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 * {
     @apply outline-none;
     font-family: "Manrope", serif;

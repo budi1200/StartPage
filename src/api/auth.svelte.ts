@@ -1,22 +1,26 @@
 import { AUTH_URL, CLIENT_ID, SCOPES } from "@/constants";
-import { authToken } from "@/store/data.store";
+import { authToken } from "@/store/data.store.svelte";
+import type { Identity } from "webextension-polyfill";
 
-const extractAccessToken = (redirectUri) => {
+const extractAccessToken = (redirectUri: string) => {
     let match = redirectUri.match(/[#?](.*)/);
     if (!match || match.length < 1) return null;
     let params = new URLSearchParams(match[1].split("#")[0]);
     return params.get("access_token");
 };
 
+let identity: Identity.Static | null = null;
 export const googleLogin = async (isInteractive: boolean) => {
-    let token = null;
-
+    // @ts-ignore
     if (globalThis.browser === undefined) {
         console.log("Polyfill not supported");
         return;
     }
 
-    let { identity } = await import("webextension-polyfill");
+    if (identity === null) {
+        const lib = await import("webextension-polyfill");
+        identity = lib.identity;
+    }
 
     const auth_params = {
         client_id: CLIENT_ID,
@@ -39,8 +43,7 @@ export const googleLogin = async (isInteractive: boolean) => {
                 throw "Authorization failure";
             }
 
-            token = extractedToken;
-            authToken.set(extractedToken);
+            authToken.value = extractedToken;
         })
         .catch((err) => {
             console.log(err);

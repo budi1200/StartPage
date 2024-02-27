@@ -1,8 +1,10 @@
 export interface IBookmark {
     id: string;
-    label: string;
+    title: string;
+    subtitle: string;
     url: string;
     iconType: IconType;
+    host: string;
 }
 
 export interface ICategory {
@@ -16,7 +18,7 @@ export interface IStartPageData {
 }
 
 export enum IconType {
-    DUCKDUCKGO,
-    GOOGLE,
-    CUSTOM,
+    DUCKDUCKGO = "duckduckgo",
+    GOOGLE = "google",
+    CUSTOM = "custom",
 }

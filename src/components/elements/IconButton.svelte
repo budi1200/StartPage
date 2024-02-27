@@ -1,7 +1,7 @@
 <script lang="ts">
-    export let title: string;
+    let { title, onclick } = $props<{ title: string; onclick: any }>();
 </script>
 
-<button on:click {title} class="glass flex rounded-md p-2 hover:bg-hoverGrey hover:shadow-hoverOutline">
+<button {onclick} {title} class="glass flex rounded-md p-2 text-sm hover:bg-hoverGrey hover:shadow-hoverOutline">
     <slot />
 </button>
