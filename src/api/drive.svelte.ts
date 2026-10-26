@@ -7,13 +7,18 @@ const driveRequest = async (url: string, init: RequestInit = {}) => {
         headers: { ...init.headers, Authorization: `Bearer ${authToken.value}` },
     });
 
+    if (response.status === 401) {
+        authToken.value = undefined;
+        throw new Error("Google session expired, log in again");
+    }
+
     if (!response.ok) {
         throw new Error(`Drive request failed: ${response.status} ${await response.text()}`);
     }
 
     // A newly created data file has no content yet
     const body = await response.text();
-    return body === "" ? body : JSON.parse(body);
+    return body === "" ? undefined : JSON.parse(body);
 };
 
 export const listCloudFiles = async () => {

@@ -1,33 +1,18 @@
 <script lang="ts">
     import { dataStore, isEditing } from "@/store/data.store.svelte";
-    import { exportData, importData, loadLocalData } from "@/util/data-manager.svelte";
+    import { exportData, importData } from "@/util/data-manager.svelte";
+    import { swap } from "@/util/swap";
     import Category from "./Category.svelte";
     import PhPlus from "~icons/ph/plus";
     import PhDownload from "~icons/ph/download";
     import PhUpload from "~icons/ph/upload";
 
-    $effect(() => {
-        loadLocalData();
-    });
-
-    // Note: Workaround because using the "store/state" directly throws a warning ¯\_(ツ)_/¯
-    const deleteWorkaround = (id: any) => {
-        dataStore.deleteCategory(id);
+    const moveCategory = (from: number, to: number) => {
+        if (!dataStore.value) return;
+        swap(dataStore.value.categories, from, to);
     };
-
-    const moveLeft = (index: number) => {
-        if (index === 0 || !dataStore.value) return;
-        const temp = dataStore.value.categories[index];
-        dataStore.value.categories[index] = dataStore.value.categories[index - 1];
-        dataStore.value.categories[index - 1] = temp;
-    };
-
-    const moveRight = (index: number) => {
-        if (!dataStore.value || index === dataStore.value.categories.length - 1) return;
-        const temp = dataStore.value.categories[index];
-        dataStore.value.categories[index] = dataStore.value.categories[index + 1];
-        dataStore.value.categories[index + 1] = temp;
-    };
+    const moveLeft = (index: number) => moveCategory(index, index - 1);
+    const moveRight = (index: number) => moveCategory(index, index + 1);
 </script>
 
 <section class="flex flex-wrap items-start gap-4 select-none">
@@ -35,7 +20,7 @@
         {#each dataStore.value.categories as _, index}
             <Category
                 bind:categoryData={dataStore.value.categories[index]}
-                deleteCategory={deleteWorkaround}
+                deleteCategory={dataStore.deleteCategory}
                 listIndex={index}
                 listLength={dataStore.value.categories.length}
                 {moveLeft}

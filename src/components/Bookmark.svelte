@@ -3,7 +3,7 @@
     import FancyCard from "@/components/elements/FancyCard.svelte";
     import { isEditing } from "@/store/data.store.svelte";
     import { getFaviconUrl } from "@/util/favicon-helper";
-    import EditBookmarkModal from "@/components/modals/EditBookmarkModal.svelte";
+    import BookmarkModal from "@/components/modals/BookmarkModal.svelte";
     import PhTrash from "~icons/ph/trash";
     import PhPencilSimple from "~icons/ph/pencil-simple";
     import PhCaretUp from "~icons/ph/caret-up";
@@ -24,7 +24,7 @@
         moveUp: (index: number) => void;
         moveDown: (index: number) => void;
     } = $props();
-    let editModal = $state<EditBookmarkModal>();
+    let editModal = $state<BookmarkModal>();
 </script>
 
 <div class="flex items-center justify-between gap-1.5 rounded-md">
@@ -74,6 +74,11 @@
         >
             <PhTrash />
         </button>
-        <EditBookmarkModal bind:this={editModal} bind:bookmark />
+        <BookmarkModal
+            bind:this={editModal}
+            title="Edit bookmark"
+            {bookmark}
+            onsave={(edited) => (bookmark = edited)}
+        />
     {/if}
 </div>

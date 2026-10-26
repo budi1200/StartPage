@@ -1,33 +1,30 @@
 <script lang="ts">
     import Input from "@/components/elements/Input.svelte";
+    import InputSelect from "@/components/elements/InputSelect.svelte";
     import { getFaviconPreviewUrl, iconTypes, safeParseUrl } from "@/util/favicon-helper";
     import { type IBookmark, IconType } from "@/types";
-    import InputSelect from "@/components/elements/InputSelect.svelte";
+
+    let { title, bookmark, onsave }: { title: string; bookmark?: IBookmark; onsave: (bookmark: IBookmark) => void } =
+        $props();
+
+    let modalComponent = $state<HTMLDialogElement>();
+    let bookmarkName = $state<string>();
+    let bookmarkUrl = $state<string>();
+    let selectedIconType = $state<IconType>(IconType.DUCKDUCKGO);
+    let customUrl = $state<string>();
+
+    const iconPreviewUrl = $derived(getFaviconPreviewUrl(bookmarkUrl, selectedIconType, customUrl));
 
     export const openModal = () => {
+        bookmarkName = bookmark?.title;
+        bookmarkUrl = bookmark?.url;
+        selectedIconType = bookmark?.iconType ?? IconType.DUCKDUCKGO;
+        customUrl = bookmark?.iconType === IconType.CUSTOM ? bookmark.host : undefined;
         modalComponent?.showModal();
     };
 
-    const closeModal = () => {
-        modalComponent?.close();
-        bookmarkName = bookmark?.title;
-        bookmarkUrl = bookmark?.url;
-        selectedIconType = bookmark.iconType;
-        customUrl = bookmark.iconType === IconType.CUSTOM ? bookmark.host : "";
-    };
-
-    let { bookmark = $bindable() }: { bookmark: IBookmark } = $props();
-    let modalComponent = $state<HTMLDialogElement>();
-
-    let bookmarkName = $state<string>(bookmark?.title);
-    let bookmarkUrl = $state<string>(bookmark?.url);
-    let selectedIconType = $state<IconType>(bookmark.iconType);
-    let customUrl = $state<string>(bookmark.iconType === IconType.CUSTOM ? bookmark.host : "");
-
-    const iconPreviewUrl = $derived.by(() => getFaviconPreviewUrl(bookmarkUrl, selectedIconType, customUrl));
-
-    const editBookmark = (e: SubmitEvent) => {
-        if (!bookmarkName || !bookmarkUrl || !selectedIconType) {
+    const save = (e: SubmitEvent) => {
+        if (!bookmarkName || !bookmarkUrl) {
             e.preventDefault();
             alert("Please fill all fields");
             return;
@@ -40,21 +37,23 @@
             return;
         }
 
-        // Update bookmark data
-        bookmark.title = bookmarkName;
-        bookmark.subtitle = urlObj.href.replace(/https?:\/\//i, "").replace(/\/$/, "");
-        bookmark.url = bookmarkUrl;
-        bookmark.iconType = selectedIconType;
-        bookmark.host = selectedIconType === IconType.CUSTOM ? customUrl! : urlObj.host;
+        onsave({
+            id: bookmark?.id ?? crypto.randomUUID(),
+            title: bookmarkName,
+            subtitle: urlObj.href.replace(/https?:\/\//i, "").replace(/\/$/, ""),
+            url: bookmarkUrl,
+            iconType: selectedIconType,
+            host: selectedIconType === IconType.CUSTOM ? customUrl! : urlObj.host,
+        });
     };
 </script>
 
-<dialog bind:this={modalComponent} onsubmit={editBookmark} class="m-auto bg-transparent">
+<dialog bind:this={modalComponent} onsubmit={save} class="m-auto bg-transparent">
     <form
         method="dialog"
         class="glass relative flex w-full flex-col rounded-md border-none bg-clip-padding p-4 text-white shadow-lg outline-hidden"
     >
-        <h5 class="mb-4 text-xl font-medium">New bookmark</h5>
+        <h5 class="mb-4 text-xl font-medium">{title}</h5>
 
         <div class="mb-4 flex w-72 flex-col gap-4">
             <Input placeholder="Name" bind:value={bookmarkName} />
@@ -73,7 +72,7 @@
             <button
                 type="button"
                 class="inline-block rounded-sm border border-white/20 px-6 py-2.5 text-xs leading-tight font-medium text-white uppercase shadow-md transition duration-150 ease-in-out hover:bg-white/20 hover:shadow-lg focus:shadow-lg focus:ring-0 focus:outline-hidden active:bg-white/10 active:shadow-lg"
-                onclick={closeModal}
+                onclick={() => modalComponent?.close()}
             >
                 Cancel
             </button>

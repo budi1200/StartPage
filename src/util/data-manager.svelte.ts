@@ -1,6 +1,7 @@
 import { authToken, dataStore, isSyncing } from "@/store/data.store.svelte";
 import { defaultPageData, LOCAL_KEY } from "@/constants";
 import { getCloudData, getDataFileID, updateCloudData } from "@/api/drive.svelte";
+import { parseStartPageData, parseStartPageJson } from "@/util/parse-data";
 
 const saveBlob = (blob: Blob, fileName: string) => {
     const a = document.createElement("a");
@@ -16,14 +17,18 @@ const saveBlob = (blob: Blob, fileName: string) => {
 };
 
 export const importData = () => {
-    let result = prompt("Enter JSON data");
+    const result = prompt("Enter JSON data");
+    if (result === null || result === "") return;
 
-    if (result !== null && result !== "") {
-        dataStore.value = JSON.parse(result);
-        saveData();
-        console.log("Data imported");
-        alert("Data imported");
+    const data = parseStartPageJson(result);
+    if (data === null) {
+        alert("Import failed: not valid StartPage data");
+        return;
     }
+
+    dataStore.value = data;
+    saveData();
+    alert("Data imported");
 };
 
 export const exportData = () => {
@@ -31,39 +36,38 @@ export const exportData = () => {
     saveBlob(blob, "startpage.json");
 };
 
-export const saveData = async () => {
-    const data = dataStore.value;
+const runCloudSync = async (task: () => Promise<void>) => {
+    isSyncing.value = true;
+    try {
+        await task();
+    } catch (err) {
+        console.log(err);
+        alert(`Cloud sync failed: ${err instanceof Error ? err.message : err}`);
+    } finally {
+        isSyncing.value = false;
+    }
+};
 
-    localStorage.setItem(LOCAL_KEY, JSON.stringify(data));
-    if (authToken.value !== undefined) await saveToCloud();
+export const saveData = async () => {
+    localStorage.setItem(LOCAL_KEY, JSON.stringify(dataStore.value));
+    if (authToken.value === undefined) return;
+
+    await runCloudSync(async () => {
+        const fileId = await getDataFileID();
+        await updateCloudData(fileId, JSON.stringify(dataStore.value));
+    });
 };
 
 export const loadLocalData = () => {
     const localData = localStorage.getItem(LOCAL_KEY);
-    let data;
-    if (localData) {
-        data = JSON.parse(localData);
-    }
-
-    dataStore.value = data || defaultPageData;
-    return dataStore;
+    dataStore.value = (localData && parseStartPageJson(localData)) || defaultPageData;
 };
 
-export const loadCloudData = async () => {
-    isSyncing.value = true;
+export const loadCloudData = () =>
+    runCloudSync(async () => {
+        const cloudData = parseStartPageData(await getCloudData());
+        if (cloudData === null) throw new Error("no valid data in Google Drive, kept local data");
 
-    const cloudData = await getCloudData();
-    localStorage.setItem(LOCAL_KEY, JSON.stringify(cloudData));
-    loadLocalData();
-
-    isSyncing.value = false;
-};
-
-export const saveToCloud = async () => {
-    const fileId = await getDataFileID();
-    isSyncing.value = true;
-
-    await updateCloudData(fileId, JSON.stringify(dataStore.value));
-
-    isSyncing.value = false;
-};
+        localStorage.setItem(LOCAL_KEY, JSON.stringify(cloudData));
+        dataStore.value = cloudData;
+    });

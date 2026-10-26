@@ -1,6 +1,5 @@
 import { AUTH_URL, CLIENT_ID, SCOPES } from "@/constants";
 import { authToken } from "@/store/data.store.svelte";
-import type { Identity } from "webextension-polyfill";
 
 const extractAccessToken = (redirectUri: string) => {
     let match = redirectUri.match(/[#?](.*)/);
@@ -9,17 +8,11 @@ const extractAccessToken = (redirectUri: string) => {
     return params.get("access_token");
 };
 
-let identity: Identity.Static | null = null;
 export const googleLogin = async (isInteractive: boolean) => {
-    // @ts-ignore
-    if (globalThis.chrome?.runtime?.id === undefined) {
+    const identity = globalThis.chrome?.identity;
+    if (identity === undefined) {
         console.log("Not running as an extension");
         return;
-    }
-
-    if (identity === null) {
-        const lib = await import("webextension-polyfill");
-        identity = lib.identity;
     }
 
     const auth_params = {
@@ -31,21 +24,13 @@ export const googleLogin = async (isInteractive: boolean) => {
 
     const url = new URLSearchParams(Object.entries(auth_params)).toString();
 
-    identity
-        .launchWebAuthFlow({
-            url: AUTH_URL + url,
-            interactive: isInteractive,
-        })
-        .then((res) => {
-            const extractedToken = extractAccessToken(res);
+    try {
+        const response = await identity.launchWebAuthFlow({ url: AUTH_URL + url, interactive: isInteractive });
+        const extractedToken = extractAccessToken(response);
+        if (extractedToken == null) throw new Error("Authorization failure");
 
-            if (extractedToken == null) {
-                throw "Authorization failure";
-            }
-
-            authToken.value = extractedToken;
-        })
-        .catch((err) => {
-            console.log(err);
-        });
+        authToken.value = extractedToken;
+    } catch (err) {
+        console.log(err);
+    }
 };

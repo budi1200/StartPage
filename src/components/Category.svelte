@@ -2,7 +2,8 @@
     import { isEditing } from "@/store/data.store.svelte";
     import type { ICategory } from "@/types";
     import Bookmark from "./Bookmark.svelte";
-    import AddBookmarkModal from "@/components/modals/AddBookmarkModal.svelte";
+    import BookmarkModal from "@/components/modals/BookmarkModal.svelte";
+    import { swap } from "@/util/swap";
     import FancyCard from "@/components/elements/FancyCard.svelte";
     import Input from "@/components/elements/Input.svelte";
     import PhTrash from "~icons/ph/trash";
@@ -25,25 +26,14 @@
         moveLeft: (index: number) => void;
         moveRight: (index: number) => void;
     } = $props();
-    let addBookmarkModal = $state<AddBookmarkModal>();
+    let addBookmarkModal = $state<BookmarkModal>();
 
     const deleteBookmark = (id: string) => {
         categoryData.bookmarks = categoryData.bookmarks.filter((x) => x.id !== id);
     };
 
-    const moveUp = (index: number) => {
-        if (index === 0) return;
-        const temp = categoryData.bookmarks[index];
-        categoryData.bookmarks[index] = categoryData.bookmarks[index - 1];
-        categoryData.bookmarks[index - 1] = temp;
-    };
-
-    const moveDown = (index: number) => {
-        if (index === categoryData.bookmarks.length - 1) return;
-        const temp = categoryData.bookmarks[index];
-        categoryData.bookmarks[index] = categoryData.bookmarks[index + 1];
-        categoryData.bookmarks[index + 1] = temp;
-    };
+    const moveUp = (index: number) => swap(categoryData.bookmarks, index, index - 1);
+    const moveDown = (index: number) => swap(categoryData.bookmarks, index, index + 1);
 </script>
 
 <article class="glass z-10 w-72 rounded-md border border-transparent p-4">
@@ -111,4 +101,8 @@
     </div>
 </article>
 
-<AddBookmarkModal bind:this={addBookmarkModal} bind:category={categoryData} />
+<BookmarkModal
+    bind:this={addBookmarkModal}
+    title="New bookmark"
+    onsave={(added) => categoryData.bookmarks.push(added)}
+/>

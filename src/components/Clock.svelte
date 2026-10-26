@@ -25,17 +25,13 @@
 
     let today = $state(new Date());
 
-    const updateTime = () => {
-        today = new Date();
-        setTimeout(() => updateTime(), 1000);
-    };
-
     $effect(() => {
-        updateTime();
+        const timer = setInterval(() => (today = new Date()), 1000);
+        return () => clearInterval(timer);
     });
 
     const editBtnClick = () => {
-        googleLogin(true);
+        googleLogin(false);
         isEditing.value = true;
     };
 
