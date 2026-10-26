@@ -1,14 +1,26 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+    --font-sans: "Manrope", sans-serif;
+    --text-xxs: 0.7rem;
+    --color-hoverGrey: rgba(27, 26, 27, 0.445);
+    --shadow-hoverOutline: 0 2.8px 2.2px rgba(0, 0, 0, 0.034), 0 6.7px 5.3px rgba(0, 0, 0, 0.048);
+}
 
 * {
-    @apply outline-none;
+    @apply outline-hidden;
     font-family: "Manrope", serif;
 }
 
 *:focus {
-    @apply outline-none !important;
+    @apply outline-hidden!;
+}
+
+@layer base {
+    button:not(:disabled),
+    [role="button"]:not(:disabled) {
+        cursor: pointer;
+    }
 }
 
 .glass {

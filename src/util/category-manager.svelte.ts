@@ -1,5 +1,4 @@
-import type { ICategory, IStartPageData } from "src/types";
-import { nanoid } from "nanoid";
+import type { ICategory, IStartPageData } from "@/types";
 
 // Note: there might be a better way to do this
 export function createDataStore(value?: IStartPageData | undefined) {
@@ -14,7 +13,7 @@ export function createDataStore(value?: IStartPageData | undefined) {
         },
         addCategory: () => {
             let newCategory: ICategory = {
-                id: nanoid(),
+                id: crypto.randomUUID(),
                 label: "New Category",
                 bookmarks: [],
             };

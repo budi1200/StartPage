@@ -30,7 +30,7 @@
     };
 </script>
 
-<section class="flex select-none flex-wrap items-start gap-4">
+<section class="flex flex-wrap items-start gap-4 select-none">
     {#if dataStore.value !== undefined}
         {#each dataStore.value.categories as _, index}
             <Category

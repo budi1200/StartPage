@@ -12,8 +12,8 @@ const extractAccessToken = (redirectUri: string) => {
 let identity: Identity.Static | null = null;
 export const googleLogin = async (isInteractive: boolean) => {
     // @ts-ignore
-    if (globalThis.browser === undefined) {
-        console.log("Polyfill not supported");
+    if (globalThis.chrome?.runtime?.id === undefined) {
+        console.log("Not running as an extension");
         return;
     }
 

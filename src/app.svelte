@@ -6,7 +6,7 @@
 </script>
 
 <svelte:head>
-    <style lang="postcss">
+    <style>
         @font-face {
             font-family: "Manrope";
             font-style: normal;
@@ -21,9 +21,9 @@
     {/if}
 </svelte:head>
 
-<div class="-z-1 fixed left-0 top-0 h-full w-full bg-[url('/assets/images/bg/9490e8fu9oi61.webp')] bg-cover" />
+<div class="fixed top-0 left-0 -z-1 h-full w-full bg-[url('/assets/images/bg/9490e8fu9oi61.webp')] bg-cover"></div>
 
-<div class="container mx-auto px-6 pb-32 pt-36 text-white">
+<div class="container mx-auto px-6 pt-36 pb-32 text-white">
     <Clock />
     <CategoriesWrapper />
 </div>

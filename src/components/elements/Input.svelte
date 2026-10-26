@@ -1,5 +1,5 @@
 <script lang="ts">
-    let { placeholder, value } = $props<{ placeholder: string; value: any }>();
+    let { placeholder, value = $bindable() }: { placeholder: string; value?: string } = $props();
 </script>
 
 <input

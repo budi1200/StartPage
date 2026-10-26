@@ -1,5 +1,4 @@
 <script lang="ts">
-    import dayjs from "dayjs";
     import IconButton from "@/components/elements/IconButton.svelte";
     import { saveData, loadCloudData, loadLocalData } from "@/util/data-manager.svelte";
     import { googleLogin } from "@/api/auth.svelte";
@@ -11,10 +10,23 @@
     import PhWarning from "~icons/ph/warning";
     import { authToken, isEditing, isSyncing } from "@/store/data.store.svelte";
 
-    let today = $state(dayjs());
+    const timeFormat = new Intl.DateTimeFormat("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hourCycle: "h23",
+    });
+
+    const formatDate = (date: Date) => {
+        const weekday = date.toLocaleDateString("en-US", { weekday: "long" });
+        const month = date.toLocaleDateString("en-US", { month: "long" });
+        return `${weekday}, ${date.getDate()}. ${month} ${date.getFullYear()}`;
+    };
+
+    let today = $state(new Date());
 
     const updateTime = () => {
-        today = dayjs();
+        today = new Date();
         setTimeout(() => updateTime(), 1000);
     };
 
@@ -39,9 +51,9 @@
 </script>
 
 <div id="clock" class="relative mb-3 text-white">
-    <h1 class="select-none text-5xl tracking-wide">{today.format("HH:mm:ss")}</h1>
-    <div class="flex select-none items-center text-base tracking-widest">
-        {today.format("dddd, D. MMMM YYYY")}
+    <h1 class="text-5xl tracking-wide select-none">{timeFormat.format(today)}</h1>
+    <div class="flex items-center text-base tracking-widest select-none">
+        {formatDate(today)}
 
         {#if isSyncing.value}
             <span class="ml-2 animate-spin">

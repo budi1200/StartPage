@@ -1,12 +1,12 @@
 {
-    "manifest_version": 2,
+    "manifest_version": 3,
     "name": "StartPage",
     "version": "3.5.1",
     "description": "A startpage extension.",
     "browser_specific_settings": {
         "gecko": {
             "id": "{5f3326f2-ff61-4187-a700-b8d0262f10d4}",
-            "strict_min_version": "90.0"
+            "strict_min_version": "109.0"
         }
     },
     "chrome_url_overrides": {

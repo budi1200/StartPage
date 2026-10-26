@@ -10,14 +10,21 @@
     import PhCaretLeft from "~icons/ph/caret-left";
     import PhCaretRight from "~icons/ph/caret-right";
 
-    let { categoryData, deleteCategory, listIndex, listLength, moveLeft, moveRight } = $props<{
+    let {
+        categoryData = $bindable(),
+        deleteCategory,
+        listIndex,
+        listLength,
+        moveLeft,
+        moveRight,
+    }: {
         categoryData: ICategory;
         deleteCategory: (id: string) => void;
         listIndex: number;
         listLength: number;
         moveLeft: (index: number) => void;
         moveRight: (index: number) => void;
-    }>();
+    } = $props();
     let addBookmarkModal = $state<AddBookmarkModal>();
 
     const deleteBookmark = (id: string) => {
@@ -50,7 +57,7 @@
                 {#if listIndex > 0}
                     <button
                         class="cursor-pointer rounded-md p-1 transition-all hover:bg-hoverGrey"
-                        on:click={() => moveLeft(listIndex)}
+                        onclick={() => moveLeft(listIndex)}
                     >
                         <PhCaretLeft />
                     </button>
@@ -59,7 +66,7 @@
                 {#if listIndex < listLength - 1}
                     <button
                         class="cursor-pointer rounded-md p-1 transition-all hover:bg-hoverGrey"
-                        on:click={() => moveRight(listIndex)}
+                        onclick={() => moveRight(listIndex)}
                     >
                         <PhCaretRight />
                     </button>
@@ -87,18 +94,18 @@
                 class="cursor-pointer"
                 title="New"
                 subtitle="Add a new bookmark"
-                on:click={() => addBookmarkModal?.openModal()}
+                onclick={() => addBookmarkModal?.openModal()}
             >
-                <PhPlus slot="icon" />
+                {#snippet icon()}<PhPlus />{/snippet}
             </FancyCard>
 
             <FancyCard
                 class="cursor-pointer"
                 title="Delete"
                 subtitle="Delete category"
-                on:click={() => deleteCategory(categoryData.id)}
+                onclick={() => deleteCategory(categoryData.id)}
             >
-                <PhTrash slot="icon" />
+                {#snippet icon()}<PhTrash />{/snippet}
             </FancyCard>
         {/if}
     </div>

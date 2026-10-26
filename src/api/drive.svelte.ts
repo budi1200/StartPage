@@ -1,13 +1,19 @@
 import { authToken } from "@/store/data.store.svelte";
-import axios from "axios";
 import { DRIVE_FILES_URL, DRIVE_UPLOAD_URL } from "@/constants";
 
-const getAxiosOptions = () => {
-    return {
-        headers: {
-            Authorization: `Bearer ${authToken.value}`,
-        },
-    };
+const driveRequest = async (url: string, init: RequestInit = {}) => {
+    const response = await fetch(url, {
+        ...init,
+        headers: { ...init.headers, Authorization: `Bearer ${authToken.value}` },
+    });
+
+    if (!response.ok) {
+        throw new Error(`Drive request failed: ${response.status} ${await response.text()}`);
+    }
+
+    // A newly created data file has no content yet
+    const body = await response.text();
+    return body === "" ? body : JSON.parse(body);
 };
 
 export const listCloudFiles = async () => {
@@ -19,22 +25,22 @@ export const listCloudFiles = async () => {
     };
 
     const url = new URLSearchParams(Object.entries(urlParams)).toString();
-    const result = await axios.get(DRIVE_FILES_URL + "?" + url, getAxiosOptions());
+    const result = await driveRequest(DRIVE_FILES_URL + "?" + url);
 
-    return result.data.files;
+    return result.files;
 };
 
 export const createCloudFile = async () => {
-    const result = await axios.post(
-        DRIVE_FILES_URL,
-        {
+    const result = await driveRequest(DRIVE_FILES_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
             parents: ["appDataFolder"],
             name: "startpage_data.json",
-        },
-        getAxiosOptions(),
-    );
+        }),
+    });
 
-    return result.data.id;
+    return result.id;
 };
 
 export const getDataFileID = async () => {
@@ -55,18 +61,12 @@ export const getDataFileID = async () => {
 export const getCloudData = async () => {
     const fileId = await getDataFileID();
 
-    const result = await axios.get(DRIVE_FILES_URL + "/" + fileId + "?alt=media", getAxiosOptions());
-
-    return result.data;
+    return await driveRequest(DRIVE_FILES_URL + "/" + fileId + "?alt=media");
 };
 
-export const updateCloudData = async (fileId: string, detail: any) => {
-    const result = await axios.patch(DRIVE_UPLOAD_URL + "/" + fileId + "?uploadType=media", detail, getAxiosOptions());
-
-    if (result.status !== 200) {
-        console.log("Upload failed", result);
-        return;
-    }
-
-    return result.data;
+export const updateCloudData = async (fileId: string, detail: string) => {
+    return await driveRequest(DRIVE_UPLOAD_URL + "/" + fileId + "?uploadType=media", {
+        method: "PATCH",
+        body: detail,
+    });
 };
