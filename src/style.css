@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+@font-face {
+    font-family: "Manrope";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("/assets/fonts/Manrope-Regular.woff2") format("woff2");
+}
+
 @theme {
     --font-sans: "Manrope", sans-serif;
     --text-xxs: 0.7rem;
@@ -17,6 +25,16 @@
 }
 
 @layer base {
+    html {
+        min-height: 100%;
+        background: #83a8ae
+            image-set(
+                url("/assets/images/bg/background-2560.webp") 1x,
+                url("/assets/images/bg/background-3840.webp") 2x
+            )
+            center / cover fixed no-repeat;
+    }
+
     button:not(:disabled),
     [role="button"]:not(:disabled) {
         cursor: pointer;
