@@ -170,6 +170,145 @@ check(
     await run("alerts"),
 );
 
+check(!(await run("!!$('#quote')")), "no quote without a readwise token");
+
+const highlightsPage = JSON.stringify({
+    next: null,
+    results: [
+        { text: "> Tagged one\n>\n> Author A", tags: [{ name: "Quotes-Cycle" }] },
+        { text: "Tagged two", tags: [{ name: "quotes-cycle" }] },
+        { text: "Untagged", tags: [{ name: "other" }] },
+    ],
+});
+await run(`window.readwiseRequests = []; window.fetch = async (url, init) => {
+    readwiseRequests.push([String(url), init?.headers?.Authorization]);
+    return new Response(${JSON.stringify(highlightsPage)});
+}`);
+await run("promptAnswer = ' secret-token '; byTitle('Readwise token').click()");
+await Bun.sleep(300);
+const quoteParagraphs = await run("[...document.querySelectorAll('#quote p')].map(p => p.textContent)");
+const firstRequest = await run("readwiseRequests[0]");
+check(
+    ["Tagged one|Author A", "Tagged two"].includes(quoteParagraphs.join("|")) &&
+        firstRequest[0].includes("readwise.io/api/v2/highlights/") &&
+        firstRequest[1] === "Token secret-token",
+    "readwise token shows a tagged quote without blockquote markers",
+    [quoteParagraphs, firstRequest],
+);
+
+await load();
+check(
+    (await run("[...document.querySelectorAll('#quote p')].map(p => p.textContent)")).join("|") ===
+        quoteParagraphs.join("|"),
+    "quote comes from cache after reload",
+);
+
+const quoteText = "[...document.querySelectorAll('#quote p')].map(p => p.textContent).join('|')";
+await run(`window.readwiseRequests = []; window.fetch = async (url) => {
+    readwiseRequests.push(String(url));
+    return new Response(${JSON.stringify(highlightsPage)});
+}`);
+await run("byTitle('Edit').click()");
+await run("byTitle('Next quote').click()");
+await Bun.sleep(300);
+const nextQuote = await run(quoteText);
+check(
+    nextQuote !== quoteParagraphs.join("|") && (await run("readwiseRequests.length")) === 1,
+    "next quote refetches and shows a different quote",
+    nextQuote,
+);
+await load();
+check((await run(quoteText)) === nextQuote, "next quote persists across reload");
+
+const nearTwoPm = await page.evaluateOnNewDocument(`
+    const RealDate = Date;
+    const shift = new RealDate().setHours(13, 59, 58, 500) - RealDate.now();
+    window.Date = class extends RealDate {
+        constructor(...args) {
+            super(...(args.length ? args : [RealDate.now() + shift]));
+        }
+        static now() {
+            return RealDate.now() + shift;
+        }
+    };
+    window.readwiseRequests = [];
+    window.fetch = async (url) => {
+        readwiseRequests.push(String(url));
+        return new Response(${JSON.stringify(highlightsPage)});
+    };
+`);
+await load();
+await run(`(async () => {
+    const { currentSlot } = await import('/src/api/readwise.svelte.ts');
+    const quotes = ${JSON.stringify(["Tagged one\n\nAuthor A", "Tagged two"])};
+    localStorage.setItem('startpage-readwise-quotes', JSON.stringify({ slot: currentSlot(), quotes, skip: 0 }));
+})()`);
+await load();
+const beforeSwitch = await run(quoteText);
+await Bun.sleep(2500);
+const afterSwitch = [await run(quoteText), await run("readwiseRequests.length")];
+await page.removeScriptToEvaluateOnNewDocument(nearTwoPm.identifier);
+check(
+    afterSwitch[0] !== beforeSwitch && afterSwitch[1] === 1,
+    "open tab switches quote and refetches at 14:00 without reload",
+    [beforeSwitch, ...afterSwitch],
+);
+
+await run(
+    "localStorage.setItem('startpage-readwise-quotes', JSON.stringify({ slot: 0, quotes: ['Cached while Readwise hangs'] }))",
+);
+const hangingReadwise = await page.evaluateOnNewDocument(`
+    window.fetch = (url) => {
+        window.readwiseFetchStartedAt = performance.now();
+        return new Promise(() => {});
+    };
+`);
+await load();
+await page.waitForFunction(
+    "window.readwiseFetchStartedAt !== undefined && performance.getEntriesByName('first-contentful-paint').length",
+);
+const slowReadwise = await run(`(() => {
+    const paint = performance.getEntriesByName('first-contentful-paint')[0];
+    return {
+        paintAt: paint?.startTime,
+        fetchAt: window.readwiseFetchStartedAt,
+        quote: $('#quote')?.textContent.trim(),
+        categories: cardTitles().length,
+    };
+})()`);
+await page.removeScriptToEvaluateOnNewDocument(hangingReadwise.identifier);
+check(
+    slowReadwise.categories === 2 &&
+        slowReadwise.quote === "Cached while Readwise hangs" &&
+        slowReadwise.fetchAt > slowReadwise.paintAt,
+    "hanging readwise refresh starts after first paint and blocks nothing",
+    slowReadwise,
+);
+
+const slots = await run(`(async () => {
+    const { currentSlot } = await import('/src/api/readwise.svelte.ts');
+    const at = (day, hour, minute) => currentSlot(new Date(2026, 9, day, hour, minute));
+    return [at(27, 1, 59), at(27, 2, 0), at(27, 13, 59), at(27, 14, 0), at(28, 1, 59)];
+})()`);
+check(
+    slots[0] + 1 === slots[1] && slots[1] === slots[2] && slots[2] + 1 === slots[3] && slots[3] === slots[4],
+    "quote slot switches at 02:00 and 14:00",
+    slots,
+);
+
+await run("byTitle('Edit').click()");
+await run(
+    "window.fetch = async () => new Response('unauthorized', { status: 401 }); promptAnswer = 'bad'; byTitle('Readwise token').click()",
+);
+await Bun.sleep(300);
+check((await run("alerts.at(-1)")) === "Readwise sync failed: Readwise responded 401", "bad readwise token alerts");
+
+await run("promptAnswer = ''; byTitle('Readwise token').click()");
+check(
+    !(await run("!!$('#quote')")) && (await run("localStorage.getItem('startpage-readwise-token')")) === null,
+    "empty token removes the quote",
+);
+
 const unexpected = consoleProblems.filter((m) => !String(m).includes("Not running as an extension"));
 check(unexpected.length === 0, "no console warnings or errors", unexpected);
 

@@ -2,6 +2,9 @@
     import IconButton from "@/components/elements/IconButton.svelte";
     import { saveData, loadCloudData, loadLocalData } from "@/util/data-manager.svelte";
     import { googleLogin } from "@/api/auth.svelte";
+    import { configureReadwise, readwise, showNextQuote } from "@/api/readwise.svelte";
+    import PhQuotes from "~icons/ph/quotes";
+    import PhShuffle from "~icons/ph/shuffle";
     import PhGear from "~icons/ph/gear";
     import PhArrowsClockwise from "~icons/ph/arrows-clockwise";
     import PhCheck from "~icons/ph/check";
@@ -73,6 +76,14 @@
                 <IconButton onclick={cancelBtnClick} title="Cancel">
                     <PhX />
                 </IconButton>
+                <IconButton onclick={configureReadwise} title="Readwise token">
+                    <PhQuotes />
+                </IconButton>
+                {#if readwise.quotes.length > 1}
+                    <IconButton onclick={showNextQuote} title="Next quote">
+                        <PhShuffle />
+                    </IconButton>
+                {/if}
 
                 {#if authToken.value !== undefined}
                     <IconButton onclick={loadCloudData} title="Fetch cloud data">
