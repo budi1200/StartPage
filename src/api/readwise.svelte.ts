@@ -3,7 +3,7 @@ const CACHE_KEY = "startpage-readwise-quotes";
 const QUOTE_TAG = "quotes-cycle";
 const MAX_PAGES = 50;
 const HOUR_MS = 3_600_000;
-const SLOT_MS = 12 * HOUR_MS;
+const SLOT_MS = 2 * HOUR_MS;
 const FIRST_SWITCH_HOUR = 2;
 
 type QuoteCache = { slot: number; quotes: string[]; skip: number };
