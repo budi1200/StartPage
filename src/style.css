@@ -35,6 +35,17 @@
             center / cover fixed no-repeat;
     }
 
+    @media (prefers-color-scheme: dark) {
+        html {
+            --color-hoverGrey: rgba(255, 255, 255, 0.1);
+            background-color: #283246;
+            background-image: image-set(
+                url("/assets/images/bg/background-dark-2560.webp") 1x,
+                url("/assets/images/bg/background-dark-3840.webp") 2x
+            );
+        }
+    }
+
     button:not(:disabled),
     [role="button"]:not(:disabled) {
         cursor: pointer;
